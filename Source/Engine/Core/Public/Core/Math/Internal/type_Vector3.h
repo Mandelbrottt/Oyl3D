@@ -109,10 +109,10 @@ namespace Oyl
 	constexpr Vector_t<VECTOR_SIZE, TUnderlying> Vector_t<VECTOR_SIZE, TUnderlying>::Down = Vector_t(0, -1, 0);
 
 	template<typename TUnderlying>
-	constexpr Vector_t<VECTOR_SIZE, TUnderlying> Vector_t<VECTOR_SIZE, TUnderlying>::Forward = Vector_t(0, 0, 1);
+	constexpr Vector_t<VECTOR_SIZE, TUnderlying> Vector_t<VECTOR_SIZE, TUnderlying>::Forward = Vector_t(0, 0, -1);
 
 	template<typename TUnderlying>
-	constexpr Vector_t<VECTOR_SIZE, TUnderlying> Vector_t<VECTOR_SIZE, TUnderlying>::Backward = Vector_t(0, 0, -1);
+	constexpr Vector_t<VECTOR_SIZE, TUnderlying> Vector_t<VECTOR_SIZE, TUnderlying>::Backward = Vector_t(0, 0, 1);
 
 	namespace Vector
 	{

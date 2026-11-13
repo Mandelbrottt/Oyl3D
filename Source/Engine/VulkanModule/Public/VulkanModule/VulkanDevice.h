@@ -66,6 +66,9 @@ namespace Oyl
 		VertexBufferHandle
 		CreateVertexBuffer(const VertexBufferCreateParams& a_params) const override;
 
+		UniformBufferHandle
+		CreateUniformBuffer(const UniformBufferCreateParams& a_params) const override;
+
 		SemaphoreHandle
 		CreateSemaphore() const override;
 

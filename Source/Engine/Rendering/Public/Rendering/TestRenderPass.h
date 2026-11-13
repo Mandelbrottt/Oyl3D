@@ -3,6 +3,7 @@
 #include "Image.h"
 #include "RenderTarget.h"
 #include "Shader.h"
+#include "UniformBuffer.h"
 #include "VertexBuffer.h"
 
 #include "Rendering/RenderPass/RenderPass.h"
@@ -20,7 +21,7 @@ namespace Oyl
 		TestRenderPass(Vector2u a_size);
 
 		virtual
-		~TestRenderPass() = default;
+		~TestRenderPass();
 
 		void
 		OnViewPortResize(Vector2u a_size) override;
@@ -42,10 +43,19 @@ namespace Oyl
 		void
 		CreateRenderTarget(Vector2u a_size);
 
+		void
+		UpdateUniformBuffer();
+
+		void
+		OnDebugGui();
+
 	private:
 		ImageHandle m_colorAttachment = nullptr;
 
 		ShaderHandle m_shader = nullptr;
 		VertexBufferHandle m_vertexBuffer = nullptr;
+		UniformBufferHandle m_uniformBuffer = nullptr;
+
+		Vector3 m_gunPosition;
 	};
 }

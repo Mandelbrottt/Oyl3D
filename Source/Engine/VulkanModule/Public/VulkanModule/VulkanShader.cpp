@@ -5,6 +5,7 @@
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
 #include "VulkanRenderingEnums.h"
+#include "VulkanUniformBuffer.h"
 
 #include "Rendering/RenderTarget.h"
 
@@ -27,7 +28,7 @@ namespace Oyl
 			vk::VertexInputAttributeDescription {
 				.location = 0,
 				.binding = 0,
-				.format = vk::Format::eR32G32Sfloat,
+				.format = vk::Format::eR32G32B32Sfloat,
 				.offset = offsetof(Vertex, position)
 			},
 			vk::VertexInputAttributeDescription {
@@ -57,7 +58,42 @@ namespace Oyl
 		if (!IsValid())
 			return;
 
-		m_pipeline.clear();
+		m_vkPipeline.clear();
+	}
+
+	void
+	VulkanShader::SetUniformBuffer(const IDevice& a_device, const IUniformBuffer& a_uniformBuffer)
+	{
+		auto& vulkanUniformBuffer = static_cast<const VulkanUniformBuffer&>(a_uniformBuffer);
+
+		vk::DescriptorBufferInfo bufferInfo {
+			.buffer = vulkanUniformBuffer.GetVkBuffer(),
+			.offset = 0,
+			.range = vk::WholeSize
+		};
+		vk::WriteDescriptorSet descriptorWrite {
+			.dstSet = m_vkDescriptorSet,
+			.dstBinding = 0,
+			.dstArrayElement = 0,
+			.descriptorCount = 1,
+			.descriptorType = vk::DescriptorType::eUniformBuffer,
+			.pBufferInfo = &bufferInfo,
+		};
+		static_cast<const VulkanDevice&>(a_device).GetVkDevice().updateDescriptorSets(descriptorWrite, {});
+	}
+
+	void
+	VulkanShader::BindUniformBuffer(const ICommandBuffer& a_commandBuffer, const IUniformBuffer& a_uniformBuffer)
+	{
+		OYL_UNUSED(a_uniformBuffer);
+
+		auto& vkCommandBuffer = static_cast<const VulkanCommandBuffer&>(a_commandBuffer).GetVkCommandBuffer();
+		vkCommandBuffer.bindDescriptorSets(
+			vk::PipelineBindPoint::eGraphics,
+			m_vkPipelineLayout,
+			0,
+			*m_vkDescriptorSet,
+			nullptr);
 	}
 
 	void
@@ -116,7 +152,7 @@ namespace Oyl
 			.rasterizerDiscardEnable = vk::False,
 			.polygonMode = vk::PolygonMode::eFill,
 			.cullMode = vk::CullModeFlagBits::eBack,
-			.frontFace = vk::FrontFace::eClockwise,
+			.frontFace = vk::FrontFace::eCounterClockwise,
 			.depthBiasEnable = vk::False,
 			.lineWidth = 1.0f,
 		};
@@ -147,12 +183,16 @@ namespace Oyl
 			.pAttachments = &colorBlendAttachment
 		};
 
-		vk::PipelineLayoutCreateInfo pipelineLayoutInfo {
-			.setLayoutCount = 0,
-			.pushConstantRangeCount = 0
-		};
+		CreateDescriptorPool(device);
+		CreateDescriptorSet(device);
 
-		auto pipelineLayout = vk::raii::PipelineLayout(device.GetVkDevice(), pipelineLayoutInfo);
+		m_vkPipelineLayout = vk::raii::PipelineLayout(
+			device.GetVkDevice(),
+			{
+				.setLayoutCount = 1,
+				.pSetLayouts = &*m_vkDescriptorSetLayout,
+				.pushConstantRangeCount = 0,
+			});
 
 		{
 			OYL_PROFILE_SCOPE("vk::raii::Pipeline");
@@ -183,7 +223,7 @@ namespace Oyl
 					.pMultisampleState = &multisampling,
 					.pColorBlendState = &colorBlending,
 					.pDynamicState = &dynamicState,
-					.layout = pipelineLayout,
+					.layout = m_vkPipelineLayout,
 					.renderPass = nullptr
 				},
 				vk::PipelineRenderingCreateInfo {
@@ -193,7 +233,7 @@ namespace Oyl
 				}
 			};
 
-			m_pipeline = vk::raii::Pipeline(
+			m_vkPipeline = vk::raii::Pipeline(
 				device.GetVkDevice(),
 				nullptr,
 				pipelineCreateInfoChain.get()
@@ -214,5 +254,47 @@ namespace Oyl
 			.pCode = (uint32*) bytecode.data(),
 		};
 		return vk::raii::ShaderModule(a_device.GetVkDevice(), shaderModuleCreateInfo);
+	}
+
+	void
+	VulkanShader::CreateDescriptorPool(const VulkanDevice& a_device)
+	{
+		vk::DescriptorPoolSize poolSize {
+			.type = vk::DescriptorType::eUniformBuffer,
+			.descriptorCount = 1,
+		};
+
+		vk::DescriptorPoolCreateInfo poolInfo = {
+			.flags = vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet,
+			.maxSets = 1,
+			.poolSizeCount = 1,
+			.pPoolSizes = &poolSize,
+		};
+
+		m_vkDescriptorPool = vk::raii::DescriptorPool(a_device.GetVkDevice(), poolInfo);
+	}
+
+	void
+	VulkanShader::CreateDescriptorSet(const VulkanDevice& a_device)
+	{
+		vk::DescriptorSetLayoutBinding uboLayoutBinding {
+			.binding = 0,
+			.descriptorType = vk::DescriptorType::eUniformBuffer,
+			.descriptorCount = 1,
+			.stageFlags = vk::ShaderStageFlagBits::eVertex,
+		};
+		m_vkDescriptorSetLayout = vk::raii::DescriptorSetLayout(
+			a_device.GetVkDevice(),
+			{
+				.bindingCount = 1,
+				.pBindings = &uboLayoutBinding
+			});
+
+		vk::DescriptorSetAllocateInfo allocInfo {
+			.descriptorPool = m_vkDescriptorPool,
+			.descriptorSetCount = 1,
+			.pSetLayouts = &*m_vkDescriptorSetLayout
+		};
+		m_vkDescriptorSet = std::move(a_device.GetVkDevice().allocateDescriptorSets(allocInfo).front());
 	}
 }

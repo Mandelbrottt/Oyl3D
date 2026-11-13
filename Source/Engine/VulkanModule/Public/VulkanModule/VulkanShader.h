@@ -38,13 +38,19 @@ namespace Oyl
 		Destroy() override;
 
 		bool
-		IsValid() const override { return *m_pipeline; }
+		IsValid() const override { return *m_vkPipeline; }
+
+		void
+		SetUniformBuffer(const IDevice& a_device, const IUniformBuffer& a_uniformBuffer) override;
+
+		void
+		BindUniformBuffer(const ICommandBuffer& a_commandBuffer, const IUniformBuffer& a_uniformBuffer) override;
 
 		const vk::raii::Pipeline&
-		GetVkPipeline() const { return m_pipeline; }
+		GetVkPipeline() const { return m_vkPipeline; }
 
 		VulkanShaderId
-		GetId() const { return *m_pipeline; }
+		GetId() const { return *m_vkPipeline; }
 
 		operator VulkanShaderId() const
 		{
@@ -65,7 +71,18 @@ namespace Oyl
 		vk::raii::ShaderModule
 		CompileVkShaderModule(const VulkanDevice& a_device, const ShaderStage& a_stage);
 
+		void
+		CreateDescriptorPool(const VulkanDevice& a_device);
+
+		void
+		CreateDescriptorSet(const VulkanDevice& a_device);
+
 	private:
-		vk::raii::Pipeline m_pipeline = nullptr;
+		vk::raii::PipelineLayout m_vkPipelineLayout = nullptr;
+		vk::raii::Pipeline m_vkPipeline = nullptr;
+
+		vk::raii::DescriptorPool m_vkDescriptorPool = nullptr;
+		vk::raii::DescriptorSet m_vkDescriptorSet = nullptr;
+		vk::raii::DescriptorSetLayout m_vkDescriptorSetLayout = nullptr;
 	};
 }

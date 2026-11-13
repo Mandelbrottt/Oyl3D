@@ -8,9 +8,16 @@
 
 namespace Oyl
 {
+	class ICommandBuffer;
+	class IUniformBuffer;
+	class IDevice;
+}
+
+namespace Oyl
+{
 	struct Vertex
 	{
-		Vector2f position;
+		Vector3f position;
 		Vector3f color;
 	};
 
@@ -34,10 +41,18 @@ namespace Oyl
 
 		virtual
 		~IShader() = 0;
+
+		virtual
+		void
+		SetUniformBuffer(const IDevice& a_device, const IUniformBuffer& a_uniformBuffer) = 0;
+
+		virtual
+		void
+		BindUniformBuffer(const ICommandBuffer& a_commandBuffer, const IUniformBuffer& a_uniformBuffer) = 0;
 	};
 
 	inline
 	IShader::~IShader() {}
-	
+
 	using ShaderHandle = IObjectHandle<IShader>;
 }

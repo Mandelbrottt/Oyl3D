@@ -57,7 +57,7 @@ namespace Oyl
 
 			const aiScene* pScene = importer.ReadFile(a_fileName.Data(),
 			                                          aiProcess_Triangulate
-			                                          | aiProcess_ConvertToLeftHanded);
+			                                          | aiProcess_JoinIdenticalVertices);
 
 			if (pScene == nullptr)
 				return {};

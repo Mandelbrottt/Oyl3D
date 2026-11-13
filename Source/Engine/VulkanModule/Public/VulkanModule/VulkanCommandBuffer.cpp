@@ -74,7 +74,10 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::BeginRendering(const RenderTarget& a_renderTarget) const noexcept
+	VulkanCommandBuffer::BeginRendering(
+		const RenderTarget& a_renderTarget,
+		const BeginRenderingParams& a_params
+	) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -84,16 +87,22 @@ namespace Oyl
 		for (const IImage* image : a_renderTarget.GetColorAttachments())
 		{
 			auto* vulkanImage = static_cast<const VulkanImage*>(image);
-			colorAttachmentInfo.emplace_back(
-				vk::RenderingAttachmentInfo {
-					.imageView = vulkanImage->GetVkImageView(),
-					.imageLayout = vk::ImageLayout::eColorAttachmentOptimal,
-					//.loadOp = vk::AttachmentLoadOp::eClear, // TODO: Add way to change clear behaviour
-					.storeOp = vk::AttachmentStoreOp::eStore,
-					//.clearValue = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f)
-				}
-			);
-
+			auto renderingAttachmentInfo = vk::RenderingAttachmentInfo {
+				.imageView = vulkanImage->GetVkImageView(),
+				.imageLayout = vk::ImageLayout::eColorAttachmentOptimal,
+				.storeOp = vk::AttachmentStoreOp::eStore,
+			};
+			if (a_params.clearColor.HasValue())
+			{
+				renderingAttachmentInfo.loadOp = vk::AttachmentLoadOp::eClear;
+				renderingAttachmentInfo.clearValue = vk::ClearColorValue(
+					a_params.clearColor->r,
+					a_params.clearColor->g,
+					a_params.clearColor->b,
+					a_params.clearColor->a
+				);
+			}
+			colorAttachmentInfo.emplace_back(std::move(renderingAttachmentInfo));
 			size = vulkanImage->GetSize();
 		}
 

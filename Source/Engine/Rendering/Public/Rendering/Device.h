@@ -12,6 +12,7 @@
 #include "RenderingEnums.h"
 #include "Semaphore.h"
 #include "Shader.h"
+#include "UniformBuffer.h"
 #include "VertexBuffer.h"
 
 namespace Oyl
@@ -56,6 +57,10 @@ namespace Oyl
 		virtual
 		VertexBufferHandle
 		CreateVertexBuffer(const VertexBufferCreateParams& a_params) const = 0;
+
+		virtual
+		UniformBufferHandle
+		CreateUniformBuffer(const UniformBufferCreateParams& a_params) const = 0;
 
 		virtual
 		SemaphoreHandle

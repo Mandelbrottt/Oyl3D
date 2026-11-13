@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Core/Containers/Optional.h>
 #include <Core/Interfaces/IDestroyable.h>
 #include <Core/Math/Rect.h>
 
@@ -17,6 +18,13 @@ namespace Oyl
 	{
 		const ICommandPool& commandPool;
 	};
+
+	struct BeginRenderingParams
+	{
+		Optional<Vector4> clearColor;
+	};
+
+	static_assert(std::is_default_constructible_v<BeginRenderingParams>);
 
 	class ICommandBuffer : public IDestroyable
 	{
@@ -36,7 +44,7 @@ namespace Oyl
 
 		virtual
 		void
-		BeginRendering(const RenderTarget& a_renderTarget) const noexcept = 0;
+		BeginRendering(const RenderTarget& a_renderTarget, const BeginRenderingParams& a_params = {}) const noexcept = 0;
 
 		virtual
 		void

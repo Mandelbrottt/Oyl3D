@@ -90,7 +90,6 @@ namespace Oyl
 		while (!m_applicationWindows.Empty())
 			CloseApplicationWindow(m_applicationWindows.front());
 
-
 		m_applicationWindows.Clear();
 		m_mainWindow = nullptr;
 	}
@@ -215,11 +214,7 @@ namespace Oyl
 	}
 
 	void
-	EditorClientApplication::OnDebugGui()
-	{
-		static bool open = true;
-		ImGui::ShowDemoWindow(&open);
-	}
+	EditorClientApplication::OnDebugGui() {}
 
 	void
 	EditorClientApplication::OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event)

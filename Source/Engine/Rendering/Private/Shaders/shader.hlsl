@@ -1,8 +1,17 @@
 struct VertexInput
 {
-	float2 position : Position;
+	float3 position : Position;
 	float3 color : Color;
 };
+
+struct UniformBuffer
+{
+	float4x4 model;
+	float4x4 view;
+	float4x4 projection;
+};
+
+ConstantBuffer<UniformBuffer> g_ubo;
 
 struct VertexOutput
 {
@@ -14,8 +23,12 @@ struct VertexOutput
 VertexOutput
 VertMain(VertexInput a_input)
 {
+	float4 modelPosition = mul(g_ubo.model, float4(a_input.position, 1.0));
+	float4 modelViewPosition = mul(g_ubo.view, modelPosition);
+	float4 modelViewProjPosition = mul(g_ubo.projection, modelViewPosition);
+
 	VertexOutput output;
-	output.position = float4(a_input.position, 0.0, 1.0);
+	output.position = modelViewProjPosition;
 	output.color = a_input.color;
 	return output;
 }

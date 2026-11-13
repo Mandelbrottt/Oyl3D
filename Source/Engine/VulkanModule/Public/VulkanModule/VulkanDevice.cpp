@@ -3,6 +3,7 @@
 #include <Core/Containers/String.h>
 
 #include "VulkanRenderingEnums.h"
+#include "VulkanUniformBuffer.h"
 
 namespace Oyl
 {
@@ -87,6 +88,12 @@ namespace Oyl
 	VulkanDevice::CreateVertexBuffer(const VertexBufferCreateParams& a_params) const
 	{
 		return MakeSharedPtr<VulkanVertexBuffer>(*this, a_params);
+	}
+
+	UniformBufferHandle
+	VulkanDevice::CreateUniformBuffer(const UniformBufferCreateParams& a_params) const
+	{
+		return MakeSharedPtr<VulkanUniformBuffer>(*this, a_params);
 	}
 
 	SemaphoreHandle

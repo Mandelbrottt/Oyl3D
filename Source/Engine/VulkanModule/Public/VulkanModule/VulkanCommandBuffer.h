@@ -44,7 +44,7 @@ namespace Oyl
 		Begin() const noexcept override;
 
 		void
-		BeginRendering(const RenderTarget& a_renderTarget) const noexcept override;
+		BeginRendering(const RenderTarget& a_renderTarget, const BeginRenderingParams& a_params = {}) const noexcept override;
 
 		void
 		EndRendering() const noexcept override;
