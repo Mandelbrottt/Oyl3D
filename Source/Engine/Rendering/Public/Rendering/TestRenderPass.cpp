@@ -14,9 +14,7 @@ namespace Oyl
 {
 	struct UniformBufferObject
 	{
-		alignas(16) Matrix4 model;
-		alignas(16) Matrix4 view;
-		alignas(16) Matrix4 projection;
+		alignas(16) Matrix4 mvp;
 	};
 
 	TestRenderPass::TestRenderPass(Vector2u a_size)
@@ -59,7 +57,6 @@ namespace Oyl
 		UpdateUniformBuffer();
 
 		a_commandBuffer.BindShader(*m_shader);
-		m_shader->BindUniformBuffer(a_commandBuffer, m_uniformBuffer);
 		a_commandBuffer.DrawVertexBuffer(*m_vertexBuffer);
 
 		a_commandBuffer.EndRendering();
@@ -154,7 +151,6 @@ namespace Oyl
 		m_uniformBuffer = device.CreateUniformBuffer({
 			.stride = sizeof(UniformBufferObject)
 		});
-
 		m_shader->SetUniformBuffer(renderEngine.GetDevice(), m_uniformBuffer);
 	}
 
@@ -166,12 +162,15 @@ namespace Oyl
 		auto currentTime = Time::ElapsedTime();
 		float time = float32(currentTime - startTime);
 
-		UniformBufferObject ubo;
-		ubo.model = Matrix4(Matrix::RotateY(time * 90)) * Matrix::Translate(m_gunPosition);
-		ubo.view = Matrix::LookAt(Vector3(0, 100.f, 100.f), Vector3(0, 0, 0));
+		Matrix4 model = Matrix4(Matrix::RotateY(time * 90)) * Matrix::Translate(m_gunPosition);
+		Matrix4 view = Matrix::LookAt(Vector3(0, 100.f, 100.f), Vector3(0, 0, 0));;
 		float sizeX = (float) m_colorAttachment->GetSize().x;
 		float sizeY = (float) m_colorAttachment->GetSize().y;
-		ubo.projection = Matrix::Perspective(75, sizeX / sizeY, 0.01f, 1000.f);
+		Matrix4 projection =  Matrix::Perspective(75, sizeX / sizeY, 0.01f, 1000.f);
+		Matrix4 mvp = model * view * projection;
+
+		UniformBufferObject ubo;
+		ubo.mvp = mvp;
 		m_uniformBuffer->CopyToBuffer(&ubo);
 	}
 

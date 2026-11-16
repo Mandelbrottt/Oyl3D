@@ -552,7 +552,8 @@ local Packages = {
 
 			filter { "configurations:*" .. Config.Configurations.Distribution .. "*" }; do
 				local sharedLibsToCopy = {
-					"dxcompiler.dll"
+					"dxcompiler.dll",
+					"spirv-cross-reflect.dll"
 				}
 				for _, sharedLib in ipairs(sharedLibsToCopy) do
 					local inFile = path.join(prj.basedir, path.join("Bin", sharedLib))
@@ -584,6 +585,10 @@ local Packages = {
 				}
 				links {
 					"vulkan-1",
+					"spirv-cross-cppd",
+					"spirv-cross-cored",
+					"spirv-cross-glsld",
+					"spirv-cross-reflectd",
 				}
 			end
 		end,

@@ -10,36 +10,13 @@
 
 #include "Rendering.Vulkan/VulkanRenderingEnums.h"
 
+#include <Core/Math/Matrix.h>
+
 namespace Oyl
 {
-	vk::VertexInputBindingDescription
-	VulkanVertex::GetBindingDescription()
-	{
-		return vk::VertexInputBindingDescription {
-			.binding = 0,
-			.stride = sizeof(Vertex),
-			.inputRate = vk::VertexInputRate::eVertex
-		};
-	}
-
-	std::array<vk::VertexInputAttributeDescription, 2>
-	VulkanVertex::GetAttributeDescriptions()
-	{
-		return {
-			vk::VertexInputAttributeDescription {
-				.location = 0,
-				.binding = 0,
-				.format = vk::Format::eR32G32B32Sfloat,
-				.offset = offsetof(Vertex, position)
-			},
-			vk::VertexInputAttributeDescription {
-				.location = 1,
-				.binding = 0,
-				.format = vk::Format::eR32G32B32Sfloat,
-				.offset = offsetof(Vertex, color)
-			},
-		};
-	}
+	static
+	vk::Format
+	GetFormatFromTypeId(TypeId a_typeId);
 
 	VulkanShader::VulkanShader(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
 	{
@@ -84,20 +61,6 @@ namespace Oyl
 	}
 
 	void
-	VulkanShader::BindUniformBuffer(const IRdoCommandBuffer& a_commandBuffer, const IRdoUniformBuffer& a_uniformBuffer)
-	{
-		OYL_UNUSED(a_uniformBuffer);
-
-		auto& vkCommandBuffer = static_cast<const VulkanCommandBuffer&>(a_commandBuffer).GetVkCommandBuffer();
-		vkCommandBuffer.bindDescriptorSets(
-			vk::PipelineBindPoint::eGraphics,
-			m_vkPipelineLayout,
-			0,
-			*m_vkDescriptorSet,
-			nullptr);
-	}
-
-	void
 	VulkanShader::CreatePipeline(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
@@ -122,8 +85,27 @@ namespace Oyl
 			vkShaderStageCreateInfos.emplace_back(std::move(createInfo));
 		}
 
-		auto bindingDescription = VulkanVertex::GetBindingDescription();
-		auto attributeDescriptions = VulkanVertex::GetAttributeDescriptions();
+		auto bindingDescription = vk::VertexInputBindingDescription {
+			.binding = 0,
+			.inputRate = vk::VertexInputRate::eVertex
+		};
+		Array<vk::VertexInputAttributeDescription> attributeDescriptions;
+		for (const auto& stage : a_params.compileResult.GetShaderStages())
+		{
+			if (stage.GetShaderProfile() != ShaderProfileFlagBits::Vertex)
+				continue;
+
+			for (const auto& inputBinding : stage.GetInputBindings())
+			{
+				bindingDescription.stride += inputBinding.size;
+				attributeDescriptions.Add({
+					.location = inputBinding.location,
+					.binding = 0,
+					.format = GetFormatFromTypeId(inputBinding.type),
+					.offset = inputBinding.offset
+				});
+			}
+		}
 
 		vk::PipelineVertexInputStateCreateInfo vertexInputInfo {
 			.vertexBindingDescriptionCount = 1,
@@ -184,8 +166,8 @@ namespace Oyl
 			.pAttachments = &colorBlendAttachment
 		};
 
-		CreateDescriptorPool(device);
-		CreateDescriptorSet(device);
+		CreateDescriptorPool(device, a_params);
+		CreateDescriptorSet(device, a_params);
 
 		m_vkPipelineLayout = vk::raii::PipelineLayout(
 			device.GetVkDevice(),
@@ -258,11 +240,17 @@ namespace Oyl
 	}
 
 	void
-	VulkanShader::CreateDescriptorPool(const VulkanDevice& a_device)
+	VulkanShader::CreateDescriptorPool(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
 	{
 		vk::DescriptorPoolSize poolSize {
 			.type = vk::DescriptorType::eUniformBuffer,
-			.descriptorCount = 1,
+			.descriptorCount = [&]
+			{
+				uint result = 0;
+				for (const auto& stage : a_params.compileResult.GetShaderStages())
+					result += stage.GetBufferBindings().Length();
+				return result;
+			}(),
 		};
 
 		vk::DescriptorPoolCreateInfo poolInfo = {
@@ -276,19 +264,33 @@ namespace Oyl
 	}
 
 	void
-	VulkanShader::CreateDescriptorSet(const VulkanDevice& a_device)
+	VulkanShader::CreateDescriptorSet(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
 	{
-		vk::DescriptorSetLayoutBinding uboLayoutBinding {
-			.binding = 0,
-			.descriptorType = vk::DescriptorType::eUniformBuffer,
-			.descriptorCount = 1,
-			.stageFlags = vk::ShaderStageFlagBits::eVertex,
-		};
+		Array<vk::DescriptorSetLayoutBinding> uboBindings;
+		for (const auto& stage : a_params.compileResult.GetShaderStages())
+		{
+			if (stage.GetBufferBindings().Empty())
+				continue;
+
+			for (const auto& bufferLayoutBinding : stage.GetBufferBindings())
+			{
+				vk::DescriptorSetLayoutBinding uboLayoutBinding {
+					.binding = bufferLayoutBinding.binding,
+					.descriptorType = vk::DescriptorType::eUniformBuffer,
+					.descriptorCount = stage.GetBufferBindings().Length(),
+				};
+				if (stage.GetShaderProfile() == ShaderProfileFlagBits::Vertex)
+					uboLayoutBinding.stageFlags = vk::ShaderStageFlagBits::eVertex;
+				if (stage.GetShaderProfile() == ShaderProfileFlagBits::Fragment)
+					uboLayoutBinding.stageFlags = vk::ShaderStageFlagBits::eFragment;
+				uboBindings.Add(uboLayoutBinding);
+			}
+		}
 		m_vkDescriptorSetLayout = vk::raii::DescriptorSetLayout(
 			a_device.GetVkDevice(),
 			{
-				.bindingCount = 1,
-				.pBindings = &uboLayoutBinding
+				.bindingCount = uboBindings.Length(),
+				.pBindings = uboBindings.Data(),
 			});
 
 		vk::DescriptorSetAllocateInfo allocInfo {
@@ -298,4 +300,22 @@ namespace Oyl
 		};
 		m_vkDescriptorSet = std::move(a_device.GetVkDevice().allocateDescriptorSets(allocInfo).front());
 	}
+
+	vk::Format
+	GetFormatFromTypeId(TypeId a_typeId)
+	{
+		static ArrayMap<TypeId, vk::Format> formats = []
+		{
+			ArrayMap<TypeId, vk::Format> result;
+			result[typeidof(float)] = vk::Format::eR32Sfloat;
+			result[typeidof(Vector_t<2, float>)] = vk::Format::eR32G32Sfloat;
+			result[typeidof(Vector_t<3, float>)] = vk::Format::eR32G32B32Sfloat;
+			result[typeidof(Vector_t<4, float>)] = vk::Format::eR32G32B32A32Sfloat;
+			return result;
+		}();
+
+		OYL_ASSERT(formats.ContainsKey(a_typeId));
+		return formats[a_typeId];
+	}
+
 }

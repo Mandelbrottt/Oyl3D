@@ -8,17 +8,6 @@ namespace Oyl
 {
 	class VulkanDevice;
 
-	struct VulkanVertex : Vertex
-	{
-		static
-		vk::VertexInputBindingDescription
-		GetBindingDescription();
-
-		static
-		std::array<vk::VertexInputAttributeDescription, 2>
-		GetAttributeDescriptions();
-	};
-
 	using VulkanShaderId = IConvertibleRenderDeviceObjectId<RdoShaderId, vk::Pipeline>;
 
 	class RENDERING_VULKAN_EXPORT VulkanShader : public IRdoShader
@@ -43,11 +32,14 @@ namespace Oyl
 		void
 		SetUniformBuffer(const IRenderDevice& a_device, const IRdoUniformBuffer& a_uniformBuffer) override;
 
-		void
-		BindUniformBuffer(const IRdoCommandBuffer& a_commandBuffer, const IRdoUniformBuffer& a_uniformBuffer) override;
-
 		const vk::raii::Pipeline&
 		GetVkPipeline() const { return m_vkPipeline; }
+
+		const vk::raii::PipelineLayout&
+		GetVkPipelineLayout() const { return m_vkPipelineLayout; }
+
+		const vk::raii::DescriptorSet&
+		GetVkDescriptorSet() const { return m_vkDescriptorSet; }
 
 		VulkanShaderId
 		GetId() const { return *m_vkPipeline; }
@@ -72,10 +64,10 @@ namespace Oyl
 		CompileVkShaderModule(const VulkanDevice& a_device, const ShaderStage& a_stage);
 
 		void
-		CreateDescriptorPool(const VulkanDevice& a_device);
+		CreateDescriptorPool(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params);
 
 		void
-		CreateDescriptorSet(const VulkanDevice& a_device);
+		CreateDescriptorSet(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params);
 
 	private:
 		vk::raii::PipelineLayout m_vkPipelineLayout = nullptr;

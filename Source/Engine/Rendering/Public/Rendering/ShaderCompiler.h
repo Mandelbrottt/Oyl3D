@@ -2,6 +2,7 @@
 
 #include <Core/Containers/Array.h>
 #include <Core/Containers/String.h>
+#include <Core/Types/TypeId.h>
 
 #include "RenderingEnums.h"
 
@@ -33,6 +34,32 @@ namespace Oyl
 		CompileHlsl(StringView a_source, ShaderCompileResult* a_outShader) const = 0;
 	};
 
+	struct ShaderInputBinding
+	{
+		String name;
+		uint location;
+		TypeId type;
+		uint size;
+		uint offset;
+	};
+
+	struct ShaderBufferBinding
+	{
+		String name;
+		uint binding;
+
+		struct BufferMember
+		{
+			String name;
+			TypeId type;
+
+			uint stride;
+			uint offset;
+		};
+
+		Array<BufferMember> members;
+	};
+
 	struct ShaderStageCreateParams
 	{
 		ShaderProfileFlagBits shaderProfile;
@@ -41,6 +68,9 @@ namespace Oyl
 		size_t bufferLength;
 
 		String entryPoint;
+
+		Array<ShaderInputBinding> inputBindings;
+		Array<ShaderBufferBinding> bufferBindings;
 	};
 
 	class RENDERING_EXPORT ShaderStage final
@@ -54,18 +84,27 @@ namespace Oyl
 		~ShaderStage();
 
 		ShaderProfileFlagBits
-		GetShaderProfile() const;
+		GetShaderProfile() const { return m_shaderProfile; }
 
 		StringView
-		GetEntryPoint() const;
+		GetEntryPoint() const { return m_entryPoint; }
 
 		const Array<byte>&
-		GetByteCode() const;
+		GetByteCode() const { return m_byteCode; }
+
+		const Array<ShaderInputBinding>&
+		GetInputBindings() const { return m_inputBindings; }
+
+		const Array<ShaderBufferBinding>&
+		GetBufferBindings() const { return m_bufferBindings; }
 
 	private:
 		ShaderProfileFlagBits m_shaderProfile = {};
 		Array<byte> m_byteCode;
 		String m_entryPoint;
+
+		Array<ShaderInputBinding> m_inputBindings;
+		Array<ShaderBufferBinding> m_bufferBindings;
 	};
 
 	class RENDERING_EXPORT ShaderCompileResult
@@ -89,13 +128,13 @@ namespace Oyl
 		~ShaderCompileResult();
 
 		StringView
-		GetFilePath() const;
+		GetFilePath() const { return m_filePath; }
 
 		StringView
-		GetSourceCode() const;
+		GetSourceCode() const { return m_sourceCode; }
 
 		const Array<ShaderStage>&
-		GetShaderStages() const;
+		GetShaderStages() const { return m_stages; }
 
 	private:
 		String m_filePath;

@@ -197,6 +197,13 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
+		m_vkCommandBuffer.bindDescriptorSets(
+			vk::PipelineBindPoint::eGraphics,
+			a_shader.GetVkPipelineLayout(),
+			0,
+			*a_shader.GetVkDescriptorSet(),
+			nullptr);
+
 		m_vkCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, a_shader.GetVkPipeline());
 	}
 

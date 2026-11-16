@@ -1,6 +1,8 @@
 #include "VulkanShaderCompiler.h"
 
 #include <Core/Containers/ArrayMap.h>
+#include <Core/Math/Vector.h>
+#include <Core/Math/Matrix.h>
 #include <Core/Platform/SharedLibrary.h>
 
 #if defined(OYL_WINDOWS)
@@ -9,6 +11,8 @@
 #include <Windows.h>
 
 #include <dxc/dxcapi.h>
+
+#include <spirv_cross/spirv_reflect.hpp>
 
 namespace
 {
@@ -52,6 +56,9 @@ namespace
 
 namespace Oyl
 {
+	TypeId
+	GetTypeIdFromBaseTypeInfo(spirv_cross::SPIRType::BaseType a_baseType, uint a_width, uint a_vecSize, uint a_columns);
+
 #if defined(OYL_WINDOWS)
 	struct VulkanShaderCompiler::Impl
 	{
@@ -199,6 +206,7 @@ namespace Oyl
 			//L"external",
 
 			//DXC_ARG_WARNINGS_ARE_ERRORS,
+			//DXC_ARG_DEBUG,
 			DXC_ARG_SKIP_OPTIMIZATIONS,
 			DXC_ARG_SKIP_VALIDATION,
 		};
@@ -230,7 +238,7 @@ namespace Oyl
 
 		CComPtr<IDxcBlobUtf8> errors;
 		hres = compileResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&errors), nullptr);
-		if (errors && errors->GetStringLength() > 0)
+		if (FAILED(hres) && errors && errors->GetStringLength() > 0)
 		{
 			LogError("Shader compilation failed :\n{}", (char*) errors->GetBufferPointer());
 			throw std::runtime_error("Compilation failed");
@@ -293,7 +301,8 @@ namespace Oyl
 				return "GeomMain";
 			case ShaderProfileFlagBits::Fragment:
 				return "FragMain";
-			case ShaderProfileFlagBits::None: break;
+			case ShaderProfileFlagBits::None:
+				break;
 		}
 
 		return "";
@@ -311,7 +320,8 @@ namespace Oyl
 				return "gs_6_6";
 			case ShaderProfileFlagBits::Fragment:
 				return "ps_6_6"; // HLSL uses Pixel Shader instead of Fragment Shader
-			case ShaderProfileFlagBits::None: break;
+			case ShaderProfileFlagBits::None:
+				break;
 		}
 
 		return "";
@@ -320,6 +330,7 @@ namespace Oyl
 	ShaderStage
 	VulkanShaderCompiler::Impl::CompileHlslShaderStage(ShaderProfileFlagBits a_profile, StringView a_source, StringView a_sourceName)
 	{
+		OYL_UNUSED(a_sourceName);
 		OYL_PROFILE_FUNCTION();
 
 		HResultHandler hres;
@@ -345,8 +356,19 @@ namespace Oyl
 			// Compile to SPIRV
 			L"-spirv",
 			L"-fspv-target-env=vulkan1.3",
+			//L"-fspv-reflect",
+
+			// Strip debug and reflect from object
+			// We will query reflect info separately
+			L"-Qstrip_debug",
+			//L"-Qstrip_reflect",
+			L"-Qstrip_priv",
+			L"-Qstrip_rootsignature",
 
 			DXC_ARG_WARNINGS_ARE_ERRORS,
+			//DXC_ARG_DEBUG,
+			DXC_ARG_SKIP_OPTIMIZATIONS,
+			DXC_ARG_SKIP_VALIDATION,
 		};
 		std::vector<DxcDefine> defines {
 
@@ -386,15 +408,83 @@ namespace Oyl
 
 		CComPtr<IDxcBlob> code;
 		hres = compileResult->GetResult(&code);
-		auto codeBuffer = (byte*) code->GetBufferPointer();
+
+		spirv_cross::CompilerReflection reflection((uint32_t*) code->GetBufferPointer(), code->GetBufferSize() / 4);
+
+		Array<ShaderInputBinding> inputBindings;
+
+		uint stride = 0;
+		for (const auto& stageInput : reflection.get_shader_resources().stage_inputs)
+		{
+			ShaderInputBinding inputBinding;
+			inputBinding.name = reflection.get_name(stageInput.id);
+			inputBinding.location = reflection.get_decoration(stageInput.id, spv::DecorationLocation);
+
+			const auto& type = reflection.get_type(stageInput.type_id);
+			inputBinding.type = GetTypeIdFromBaseTypeInfo(type.basetype, type.width, type.vecsize, type.columns);
+			inputBinding.size = (type.width / 8) * type.vecsize * type.columns; // width is in bits
+			inputBinding.offset = stride;
+			inputBindings.Add(inputBinding);
+
+			stride += inputBinding.size;
+		}
+
+		Array<ShaderBufferBinding> bufferBindings;
+		for (const auto& uniformBuffer : reflection.get_shader_resources().uniform_buffers)
+		{
+			auto activeBufferRanges = reflection.get_active_buffer_ranges(uniformBuffer.id);
+			if (activeBufferRanges.size() == 0)
+				continue;
+
+			ShaderBufferBinding bufferBinding;
+			bufferBinding.name = reflection.get_name(uniformBuffer.id);
+			bufferBinding.binding = reflection.get_decoration(uniformBuffer.id, spv::DecorationBinding);
+			auto bufferType = reflection.get_type(uniformBuffer.base_type_id);
+			for (auto activeMember : activeBufferRanges)
+			{
+				ShaderBufferBinding::BufferMember bufferMember;
+				bufferMember.name = reflection.get_member_name(uniformBuffer.base_type_id, activeMember.index);
+				bufferMember.offset = (uint) activeMember.offset;
+				bufferMember.stride = (uint) activeMember.range;
+				const auto& bufferMemberType = reflection.get_type(bufferType.member_types[activeMember.index]);
+				bufferMember.type = GetTypeIdFromBaseTypeInfo(bufferMemberType.basetype, bufferMemberType.width, bufferMemberType.vecsize, bufferMemberType.columns);
+				bufferBinding.members.Add(bufferMember);
+			}
+			bufferBindings.Add(bufferBinding);
+		}
 
 		auto params = ShaderStageCreateParams {
 			.shaderProfile = a_profile,
-			.buffer = codeBuffer,
+			.buffer = (byte*) code->GetBufferPointer(),
 			.bufferLength = code->GetBufferSize(),
-			.entryPoint = std::string(entryPoint)
+			.entryPoint = std::string(entryPoint),
+			.inputBindings = inputBindings,
+			.bufferBindings = bufferBindings,
 		};
 		return ShaderStage(params);
+	}
+
+	TypeId
+	GetTypeIdFromBaseTypeInfo(
+		spirv_cross::SPIRType::BaseType a_baseType,
+		uint a_width,
+		uint a_vecSize,
+		uint a_columns
+	)
+	{
+		OYL_UNUSED(a_width);
+		using BaseType = spirv_cross::SPIRType::BaseType;
+		if (a_baseType == BaseType::Float)
+		{
+			TypeId floatTypes[4][4] = {
+				{ typeidof(float), typeidof(Vector_t<2, float>), typeidof(Vector_t<3, float>), typeidof(Vector_t<4, float>), },
+				{ typeidof(Matrix_t<2, 1, float>), typeidof(Matrix_t<2, 2, float>), typeidof(Matrix_t<2, 3, float>), typeidof(Matrix_t<2, 4, float>), },
+				{ typeidof(Matrix_t<3, 1, float>), typeidof(Matrix_t<3, 2, float>), typeidof(Matrix_t<3, 3, float>), typeidof(Matrix_t<3, 4, float>), },
+				{ typeidof(Matrix_t<4, 1, float>), typeidof(Matrix_t<4, 2, float>), typeidof(Matrix_t<4, 3, float>), typeidof(Matrix_t<4, 4, float>), },
+			};
+			return floatTypes[a_columns - 1][a_vecSize - 1]; // columns and vecSize are 1-base indexed
+		}
+		return TypeId::Null;
 	}
 #else
 	struct ShaderCompiler::Impl

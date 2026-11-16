@@ -46,10 +46,6 @@ namespace Oyl
 		virtual
 		void
 		SetUniformBuffer(const IRenderDevice& a_device, const IRdoUniformBuffer& a_uniformBuffer) = 0;
-
-		virtual
-		void
-		BindUniformBuffer(const IRdoCommandBuffer& a_commandBuffer, const IRdoUniformBuffer& a_uniformBuffer) = 0;
 	};
 
 	inline
