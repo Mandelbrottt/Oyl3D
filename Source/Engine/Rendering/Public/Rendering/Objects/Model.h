@@ -19,6 +19,9 @@ namespace Oyl
 		ModelDesc() = default;
 
 		explicit
+		ModelDesc(StringView a_filename);
+
+		explicit
 		ModelDesc(const Array<Mesh>& a_meshes)
 			: m_meshes(a_meshes) {}
 
@@ -45,8 +48,8 @@ namespace Oyl
 		SupportsExtension(StringView a_extension) = 0;
 
 		virtual
-		Optional<ModelDesc>
-		LoadModelFromFile(StringView a_fileName) = 0;
+		bool
+		LoadModelFromFile(StringView a_fileName, ModelDesc* a_modelDesc) = 0;
 	};
 
 	inline

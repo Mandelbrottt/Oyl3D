@@ -84,7 +84,7 @@ namespace Oyl
 		UnregisterModelLoaderFactory(IModelLoaderFactory& a_factory) = 0;
 
 		virtual
-		Model
+		ModelDesc
 		CreateModel(StringView a_filename) = 0;
 
 		bool

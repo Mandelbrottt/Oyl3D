@@ -92,7 +92,7 @@ namespace Oyl
 		m_material2 = Material::Make();
 		m_material2->SetShader(shader);
 
-		m_model = ModuleManager::GetModulePointer<IRenderingModule>("Rendering")->CreateModel("G:/dev/Oyl3D/Oyl3D/Source/Packages/Assimp/test/models-nonbsd/OBJ/rifle.obj");
+		m_model = Model::Make("G:/dev/Oyl3D/Oyl3D/Source/Packages/Assimp/test/models-nonbsd/OBJ/rifle.obj");
 		OYL_ASSERT(m_model && !m_model->GetMeshes().Empty());
 	}
 
