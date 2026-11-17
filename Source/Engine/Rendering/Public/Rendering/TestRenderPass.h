@@ -47,7 +47,7 @@ namespace Oyl
 		CreateRdoObjects();
 
 		void
-		UpdateUniformBuffer();
+		UpdateUniformBuffer(const Material& a_material, const Vector3& a_position);
 
 		void
 		OnDebugGui();
@@ -55,12 +55,14 @@ namespace Oyl
 	private:
 		RdoImageHandle m_colorAttachment = nullptr;
 
-		Material m_material;
+		Material m_material1;
+		Material m_material2;
 		Model m_model;
 
 		RdoShaderHandle m_shader = nullptr;
 		RdoVertexBufferHandle m_vertexBuffer = nullptr;
 
-		Vector3 m_gunPosition;
+		Vector3 m_gunPosition1;
+		Vector3 m_gunPosition2;
 	};
 }

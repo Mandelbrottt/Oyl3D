@@ -211,7 +211,7 @@ namespace Oyl
 		const auto& vulkanShaderBindingSet = static_cast<const VulkanShaderBindingSet&>(a_bindingSet);
 
 		uint32 nDescriptorSets = (uint32) vulkanShaderBindingSet.GetVkDescriptorSets().size();
-		vk::DescriptorSet* pDescriptorSets = (vk::DescriptorSet*) _alloca(sizeof(vk::DescriptorSet) * nDescriptorSets);
+		vk::DescriptorSet* pDescriptorSets = (vk::DescriptorSet*) alloca(sizeof(vk::DescriptorSet) * nDescriptorSets);
 		for (uint32 i = 0; i < nDescriptorSets; i++)
 		{
 			pDescriptorSets[i] = *vulkanShaderBindingSet.GetVkDescriptorSets()[i];
@@ -269,8 +269,8 @@ namespace Oyl
 			vkCommandBuffer.drawIndexed(a_vertexBuffer.GetIndexCount(), 1, 0, 0, 0);
 		} else
 		{
-			vkCommandBuffer.draw(a_vertexBuffer.GetVertexCount(), 1, 0, 0);
 			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
+			vkCommandBuffer.draw(a_vertexBuffer.GetVertexCount(), 1, 0, 0);
 		}
 	}
 

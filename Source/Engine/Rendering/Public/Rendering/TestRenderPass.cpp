@@ -54,10 +54,14 @@ namespace Oyl
 			                               .clearColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f)
 		                               });
 
-		UpdateUniformBuffer();
-
-		a_commandBuffer.BindShaderBindingSet(m_shader, m_material->GetShaderBindingSet());
 		a_commandBuffer.BindShader(m_shader);
+
+		UpdateUniformBuffer(m_material1, m_gunPosition1);
+		a_commandBuffer.BindShaderBindingSet(m_shader, m_material1->GetShaderBindingSet());
+		a_commandBuffer.DrawVertexBuffer(m_vertexBuffer);
+
+		UpdateUniformBuffer(m_material2, m_gunPosition2);
+		a_commandBuffer.BindShaderBindingSet(m_shader, m_material2->GetShaderBindingSet());
 		a_commandBuffer.DrawVertexBuffer(m_vertexBuffer);
 
 		a_commandBuffer.EndRendering();
@@ -81,8 +85,11 @@ namespace Oyl
 	void
 	TestRenderPass::CreateDescriptors()
 	{
-		m_material = Material::Make();
-		m_material->SetShader(Shader::Make("G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl"));
+		m_material1 = Material::Make();
+		m_material1->SetShader(Shader::Make("G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl"));
+
+		m_material2 = Material::Make();
+		m_material2->SetShader(Shader::Make("G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl"));
 
 		m_model = ModuleManager::GetModulePointer<IRenderingModule>("Rendering")->CreateModel("G:/dev/Oyl3D/Oyl3D/Source/Packages/Assimp/test/models-nonbsd/OBJ/rifle.obj");
 		OYL_ASSERT(m_model && !m_model->GetMeshes().Empty());
@@ -95,7 +102,7 @@ namespace Oyl
 
 		ShaderCompileResult result;
 		renderEngine.GetShaderCompiler().CompileHlslFromFile(
-			m_material->GetShader()->GetPath(),
+			m_material1->GetShader()->GetPath(),
 			&result
 		);
 
@@ -139,21 +146,21 @@ namespace Oyl
 	}
 
 	void
-	TestRenderPass::UpdateUniformBuffer()
+	TestRenderPass::UpdateUniformBuffer(const Material& a_material, const Vector3& a_position)
 	{
 		static auto startTime = Time::ElapsedTime();
 
 		auto currentTime = Time::ElapsedTime();
 		float time = float32(currentTime - startTime);
 
-		Matrix4 model = Matrix4(Matrix::RotateY(time * 90)) * Matrix::Translate(m_gunPosition);
+		Matrix4 model = Matrix4(Matrix::RotateY(time * 90)) * Matrix::Translate(a_position);
 		Matrix4 view = Matrix::LookAt(Vector3(0, 100.f, 100.f), Vector3(0, 0, 0));;
 		float sizeX = (float) m_colorAttachment->GetSize().x;
 		float sizeY = (float) m_colorAttachment->GetSize().y;
 		Matrix4 projection =  Matrix::Perspective(75, sizeX / sizeY, 0.01f, 1000.f);
 		Matrix4 mvp = model * view * projection;
 
-		m_material->SetMatrix("g_mvp", mvp);
+		a_material->SetMatrix("g_mvp", mvp);
 	}
 
 	void
@@ -161,7 +168,8 @@ namespace Oyl
 	{
 		ImGui::Begin("Gun");
 
-		ImGui::DragFloat3("Gun Position", m_gunPosition.data, 1, -100, 100);
+		ImGui::DragFloat3("Gun Position 1", m_gunPosition1.data, 1, -100, -5);
+		ImGui::DragFloat3("Gun Position 2", m_gunPosition2.data, 1, 5, 100);
 
 		ImGui::End();
 	}
