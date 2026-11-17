@@ -69,6 +69,10 @@ namespace Oyl
 
 		virtual
 		void
+		BindShaderBindingSet(const IRdoShader& a_shader, const IRdoShaderBindingSet& a_bindingSet) const noexcept = 0;
+
+		virtual
+		void
 		BindVertexBuffer(const IRdoVertexBuffer& a_buffer) const noexcept = 0;
 
 		virtual

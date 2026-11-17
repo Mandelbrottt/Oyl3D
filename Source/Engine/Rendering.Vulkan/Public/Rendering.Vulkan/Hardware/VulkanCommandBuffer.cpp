@@ -3,6 +3,7 @@
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
 #include "VulkanShader.h"
+#include "VulkanShaderBindingSet.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
 
@@ -197,14 +198,30 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
+		m_vkCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, a_shader.GetVkPipeline());
+	}
+
+	void
+	VulkanCommandBuffer::BindShaderBindingSet(
+		const IRdoShader& a_shader,
+		const IRdoShaderBindingSet& a_bindingSet
+	) const noexcept
+	{
+		const auto& vulkanShader = static_cast<const VulkanShader&>(a_shader);
+		const auto& vulkanShaderBindingSet = static_cast<const VulkanShaderBindingSet&>(a_bindingSet);
+
+		uint32 nDescriptorSets = (uint32) vulkanShaderBindingSet.GetVkDescriptorSets().size();
+		vk::DescriptorSet* pDescriptorSets = (vk::DescriptorSet*) _alloca(sizeof(vk::DescriptorSet) * nDescriptorSets);
+		for (uint32 i = 0; i < nDescriptorSets; i++)
+		{
+			pDescriptorSets[i] = *vulkanShaderBindingSet.GetVkDescriptorSets()[i];
+		}
 		m_vkCommandBuffer.bindDescriptorSets(
 			vk::PipelineBindPoint::eGraphics,
-			a_shader.GetVkPipelineLayout(),
+			vulkanShader.GetVkPipelineLayout(),
 			0,
-			*a_shader.GetVkDescriptorSet(),
+			{ nDescriptorSets, pDescriptorSets },
 			nullptr);
-
-		m_vkCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, a_shader.GetVkPipeline());
 	}
 
 	void

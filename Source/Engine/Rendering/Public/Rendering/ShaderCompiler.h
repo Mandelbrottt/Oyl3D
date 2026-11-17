@@ -5,6 +5,7 @@
 #include <Core/Types/TypeId.h>
 
 #include "RenderingEnums.h"
+#include "ShaderBindings.h"
 
 namespace Oyl
 {
@@ -32,32 +33,6 @@ namespace Oyl
 		virtual
 		bool
 		CompileHlsl(StringView a_source, ShaderCompileResult* a_outShader) const = 0;
-	};
-
-	struct ShaderInputBinding
-	{
-		String name;
-		uint location;
-		TypeId type;
-		uint size;
-		uint offset;
-	};
-
-	struct ShaderBufferBinding
-	{
-		String name;
-		uint binding;
-
-		struct BufferMember
-		{
-			String name;
-			TypeId type;
-
-			uint stride;
-			uint offset;
-		};
-
-		Array<BufferMember> members;
 	};
 
 	struct ShaderStageCreateParams

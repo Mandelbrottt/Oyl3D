@@ -2,6 +2,7 @@
 
 #include <Core/Containers/String.h>
 
+#include "VulkanShaderBindingSet.h"
 #include "VulkanUniformBuffer.h"
 
 #include "Rendering.Vulkan/VulkanRenderingEnums.h"
@@ -83,6 +84,12 @@ namespace Oyl
 	VulkanDevice::CreateShader(const RdoShaderCreateParams& a_params) const
 	{
 		return MakeSharedPtr<VulkanShader>(*this, a_params);
+	}
+
+	RdoShaderBindingSetHandle
+	VulkanDevice::CreateShaderBindingSet(const RdoShaderBindingSetCreateParams& a_params) const
+	{
+		return MakeSharedPtr<VulkanShaderBindingSet>(*this, a_params);
 	}
 
 	RdoVertexBufferHandle

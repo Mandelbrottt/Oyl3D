@@ -63,6 +63,9 @@ namespace Oyl
 		RdoShaderHandle
 		CreateShader(const RdoShaderCreateParams& a_params) const override;
 
+		RdoShaderBindingSetHandle
+		CreateShaderBindingSet(const RdoShaderBindingSetCreateParams& a_params) const override;
+
 		RdoVertexBufferHandle
 		CreateVertexBuffer(const RdoVertexBufferCreateParams& a_params) const override;
 

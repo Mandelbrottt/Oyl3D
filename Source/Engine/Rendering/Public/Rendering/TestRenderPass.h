@@ -60,7 +60,6 @@ namespace Oyl
 
 		RdoShaderHandle m_shader = nullptr;
 		RdoVertexBufferHandle m_vertexBuffer = nullptr;
-		RdoUniformBufferHandle m_uniformBuffer = nullptr;
 
 		Vector3 m_gunPosition;
 	};

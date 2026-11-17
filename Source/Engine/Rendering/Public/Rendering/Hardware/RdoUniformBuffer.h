@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Core/Containers/Array.h>
-
 #include "RenderDeviceObject.h"
 
 namespace Oyl

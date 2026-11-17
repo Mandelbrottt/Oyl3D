@@ -22,6 +22,7 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
+		CreateDescriptorSetLayout(a_device, a_params);
 		CreatePipeline(a_device, a_params);
 	}
 
@@ -37,27 +38,6 @@ namespace Oyl
 			return;
 
 		m_vkPipeline.clear();
-	}
-
-	void
-	VulkanShader::SetUniformBuffer(const IRenderDevice& a_device, const IRdoUniformBuffer& a_uniformBuffer)
-	{
-		auto& vulkanUniformBuffer = static_cast<const VulkanUniformBuffer&>(a_uniformBuffer);
-
-		vk::DescriptorBufferInfo bufferInfo {
-			.buffer = vulkanUniformBuffer.GetVkBuffer(),
-			.offset = 0,
-			.range = vk::WholeSize
-		};
-		vk::WriteDescriptorSet descriptorWrite {
-			.dstSet = m_vkDescriptorSet,
-			.dstBinding = 0,
-			.dstArrayElement = 0,
-			.descriptorCount = 1,
-			.descriptorType = vk::DescriptorType::eUniformBuffer,
-			.pBufferInfo = &bufferInfo,
-		};
-		static_cast<const VulkanDevice&>(a_device).GetVkDevice().updateDescriptorSets(descriptorWrite, {});
 	}
 
 	void
@@ -166,9 +146,6 @@ namespace Oyl
 			.pAttachments = &colorBlendAttachment
 		};
 
-		CreateDescriptorPool(device, a_params);
-		CreateDescriptorSet(device, a_params);
-
 		m_vkPipelineLayout = vk::raii::PipelineLayout(
 			device.GetVkDevice(),
 			{
@@ -240,51 +217,25 @@ namespace Oyl
 	}
 
 	void
-	VulkanShader::CreateDescriptorPool(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
+	VulkanShader::CreateDescriptorSetLayout(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
 	{
-		vk::DescriptorPoolSize poolSize {
-			.type = vk::DescriptorType::eUniformBuffer,
-			.descriptorCount = [&]
-			{
-				uint result = 0;
-				for (const auto& stage : a_params.compileResult.GetShaderStages())
-					result += stage.GetBufferBindings().Length();
-				return result;
-			}(),
-		};
-
-		vk::DescriptorPoolCreateInfo poolInfo = {
-			.flags = vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet,
-			.maxSets = 1,
-			.poolSizeCount = 1,
-			.pPoolSizes = &poolSize,
-		};
-
-		m_vkDescriptorPool = vk::raii::DescriptorPool(a_device.GetVkDevice(), poolInfo);
-	}
-
-	void
-	VulkanShader::CreateDescriptorSet(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
-	{
-		Array<vk::DescriptorSetLayoutBinding> uboBindings;
 		for (const auto& stage : a_params.compileResult.GetShaderStages())
-		{
-			if (stage.GetBufferBindings().Empty())
-				continue;
+			for (const auto& bufferBinding : stage.GetBufferBindings())
+				m_bufferBindings.Add(bufferBinding);
 
-			for (const auto& bufferLayoutBinding : stage.GetBufferBindings())
-			{
-				vk::DescriptorSetLayoutBinding uboLayoutBinding {
-					.binding = bufferLayoutBinding.binding,
-					.descriptorType = vk::DescriptorType::eUniformBuffer,
-					.descriptorCount = stage.GetBufferBindings().Length(),
-				};
-				if (stage.GetShaderProfile() == ShaderProfileFlagBits::Vertex)
-					uboLayoutBinding.stageFlags = vk::ShaderStageFlagBits::eVertex;
-				if (stage.GetShaderProfile() == ShaderProfileFlagBits::Fragment)
-					uboLayoutBinding.stageFlags = vk::ShaderStageFlagBits::eFragment;
-				uboBindings.Add(uboLayoutBinding);
-			}
+		Array<vk::DescriptorSetLayoutBinding> uboBindings;
+		for (const auto& bufferBinding : m_bufferBindings)
+		{
+			vk::DescriptorSetLayoutBinding uboLayoutBinding {
+				.binding = bufferBinding.binding,
+				.descriptorType = vk::DescriptorType::eUniformBuffer,
+				.descriptorCount = m_bufferBindings.Length(),
+			};
+			if (bufferBinding.stage == ShaderProfileFlagBits::Vertex)
+				uboLayoutBinding.stageFlags = vk::ShaderStageFlagBits::eVertex;
+			if (bufferBinding.stage == ShaderProfileFlagBits::Fragment)
+				uboLayoutBinding.stageFlags = vk::ShaderStageFlagBits::eFragment;
+			uboBindings.Add(uboLayoutBinding);
 		}
 		m_vkDescriptorSetLayout = vk::raii::DescriptorSetLayout(
 			a_device.GetVkDevice(),
@@ -292,13 +243,6 @@ namespace Oyl
 				.bindingCount = uboBindings.Length(),
 				.pBindings = uboBindings.Data(),
 			});
-
-		vk::DescriptorSetAllocateInfo allocInfo {
-			.descriptorPool = m_vkDescriptorPool,
-			.descriptorSetCount = 1,
-			.pSetLayouts = &*m_vkDescriptorSetLayout
-		};
-		m_vkDescriptorSet = std::move(a_device.GetVkDevice().allocateDescriptorSets(allocInfo).front());
 	}
 
 	vk::Format

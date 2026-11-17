@@ -47,7 +47,7 @@ namespace Oyl
 
 		a_commandBuffer.SetViewport(Vector2i::Zero, size);
 		a_commandBuffer.SetScissor(Vector2i::Zero, size);
-		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::ColorAttachment);
+		a_commandBuffer.TransitionImageLayout(m_colorAttachment, ImageLayout::ColorAttachment);
 
 		a_commandBuffer.BeginRendering(GetRenderTarget(),
 		                               {
@@ -56,8 +56,9 @@ namespace Oyl
 
 		UpdateUniformBuffer();
 
-		a_commandBuffer.BindShader(*m_shader);
-		a_commandBuffer.DrawVertexBuffer(*m_vertexBuffer);
+		a_commandBuffer.BindShaderBindingSet(m_shader, m_material->GetShaderBindingSet());
+		a_commandBuffer.BindShader(m_shader);
+		a_commandBuffer.DrawVertexBuffer(m_vertexBuffer);
 
 		a_commandBuffer.EndRendering();
 	}
@@ -84,6 +85,7 @@ namespace Oyl
 		m_material->SetShader(Shader::Make("G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl"));
 
 		m_model = ModuleManager::GetModulePointer<IRenderingModule>("Rendering")->CreateModel("G:/dev/Oyl3D/Oyl3D/Source/Packages/Assimp/test/models-nonbsd/OBJ/rifle.obj");
+		OYL_ASSERT(m_model && !m_model->GetMeshes().Empty());
 	}
 
 	void
@@ -124,19 +126,6 @@ namespace Oyl
 
 			vertexData.insert(vertexData.end(), (byte*) &vertices[0], (byte*) &vertices.data()[vertices.size()]);
 			indexData.insert(indexData.end(), (byte*) &indices[0], (byte*) &indices.data()[indices.size()]);
-		} else
-		{
-			const Array<Vertex> vertices = std::vector {
-				Vertex { Vector3f { -0.5f, 0, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
-				Vertex { Vector3f { -0.5f, 0, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
-				Vertex { Vector3f { 0.5f, 0, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
-				Vertex { Vector3f { 0.5f, 0, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
-			};
-
-			const Array<uint16> indices = std::vector<uint16> { 0, 1, 2, 2, 3, 0 };
-
-			vertexData.insert(vertexData.end(), (byte*) &vertices[0], (byte*) &vertices.data()[vertices.size()]);
-			indexData.insert(indexData.end(), (byte*) &indices[0], (byte*) &indices.data()[indices.size()]);
 		}
 
 		m_vertexBuffer = device.CreateVertexBuffer(
@@ -147,11 +136,6 @@ namespace Oyl
 				.indexStride = sizeof(uint16)
 			}
 		);
-
-		m_uniformBuffer = device.CreateUniformBuffer({
-			.stride = sizeof(UniformBufferObject)
-		});
-		m_shader->SetUniformBuffer(renderEngine.GetDevice(), m_uniformBuffer);
 	}
 
 	void
@@ -169,9 +153,7 @@ namespace Oyl
 		Matrix4 projection =  Matrix::Perspective(75, sizeX / sizeY, 0.01f, 1000.f);
 		Matrix4 mvp = model * view * projection;
 
-		UniformBufferObject ubo;
-		ubo.mvp = mvp;
-		m_uniformBuffer->CopyToBuffer(&ubo);
+		m_material->SetMatrix("g_mvp", mvp);
 	}
 
 	void

@@ -2,6 +2,7 @@
 
 #include <Core/Math/Vector.h>
 
+#include "RdoShaderBindingSet.h"
 #include "RenderDeviceObject.h"
 
 #include "Rendering/RenderTarget.h"
@@ -42,10 +43,6 @@ namespace Oyl
 
 		virtual
 		~IRdoShader() = 0;
-
-		virtual
-		void
-		SetUniformBuffer(const IRenderDevice& a_device, const IRdoUniformBuffer& a_uniformBuffer) = 0;
 	};
 
 	inline

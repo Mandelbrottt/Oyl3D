@@ -65,6 +65,12 @@ namespace Oyl
 		BindShader(const VulkanShader& a_shader) const noexcept;
 
 		void
+		BindShaderBindingSet(
+			const IRdoShader& a_shader,
+			const IRdoShaderBindingSet& a_bindingSet
+		) const noexcept override;
+
+		void
 		BindVertexBuffer(const IRdoVertexBuffer& a_vertexBuffer) const noexcept override;
 
 		void

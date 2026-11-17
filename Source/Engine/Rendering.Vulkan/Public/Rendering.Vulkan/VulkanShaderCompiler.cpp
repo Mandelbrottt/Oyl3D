@@ -417,6 +417,7 @@ namespace Oyl
 		for (const auto& stageInput : reflection.get_shader_resources().stage_inputs)
 		{
 			ShaderInputBinding inputBinding;
+			inputBinding.stage = a_profile;
 			inputBinding.name = reflection.get_name(stageInput.id);
 			inputBinding.location = reflection.get_decoration(stageInput.id, spv::DecorationLocation);
 
@@ -437,8 +438,10 @@ namespace Oyl
 				continue;
 
 			ShaderBufferBinding bufferBinding;
+			bufferBinding.stage = a_profile;
 			bufferBinding.name = reflection.get_name(uniformBuffer.id);
 			bufferBinding.binding = reflection.get_decoration(uniformBuffer.id, spv::DecorationBinding);
+			bufferBinding.stride = 0;
 			auto bufferType = reflection.get_type(uniformBuffer.base_type_id);
 			for (auto activeMember : activeBufferRanges)
 			{
@@ -449,6 +452,10 @@ namespace Oyl
 				const auto& bufferMemberType = reflection.get_type(bufferType.member_types[activeMember.index]);
 				bufferMember.type = GetTypeIdFromBaseTypeInfo(bufferMemberType.basetype, bufferMemberType.width, bufferMemberType.vecsize, bufferMemberType.columns);
 				bufferBinding.members.Add(bufferMember);
+			}
+			if (!bufferBinding.members.Empty())
+			{
+				bufferBinding.stride = bufferBinding.members.back().offset + bufferBinding.members.back().stride;
 			}
 			bufferBindings.Add(bufferBinding);
 		}
