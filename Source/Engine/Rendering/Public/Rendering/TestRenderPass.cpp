@@ -85,11 +85,12 @@ namespace Oyl
 	void
 	TestRenderPass::CreateDescriptors()
 	{
+		auto shader = Shader::Make("G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl");
 		m_material1 = Material::Make();
-		m_material1->SetShader(Shader::Make("G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl"));
+		m_material1->SetShader(shader);
 
 		m_material2 = Material::Make();
-		m_material2->SetShader(Shader::Make("G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl"));
+		m_material2->SetShader(shader);
 
 		m_model = ModuleManager::GetModulePointer<IRenderingModule>("Rendering")->CreateModel("G:/dev/Oyl3D/Oyl3D/Source/Packages/Assimp/test/models-nonbsd/OBJ/rifle.obj");
 		OYL_ASSERT(m_model && !m_model->GetMeshes().Empty());
