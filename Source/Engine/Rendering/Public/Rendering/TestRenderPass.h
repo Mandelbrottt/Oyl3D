@@ -47,10 +47,7 @@ namespace Oyl
 		CreateRdoObjects();
 
 		void
-		UpdateUniformBuffer(const Material& a_material, const Vector3& a_position);
-
-		void
-		OnDebugGui();
+		UpdateUniformBuffer(const Material& a_material, float a_timeOffset);
 
 	private:
 		RdoImageHandle m_colorAttachment = nullptr;

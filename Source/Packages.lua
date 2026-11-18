@@ -550,22 +550,17 @@ local Packages = {
 				"Lib",
 			}
 
-			filter { "configurations:*" .. Config.Configurations.Distribution .. "*" }; do
-				local sharedLibsToCopy = {
-					"dxcompiler.dll",
-					"spirv-cross-reflect.dll"
-				}
-				for _, sharedLib in ipairs(sharedLibsToCopy) do
-					local inFile = path.join(prj.basedir, path.join("Bin", sharedLib))
-					local outFile = path.join(Config.BinariesDir, sharedLib)
-					local surround = function(str) return "%[" .. str .. "]" end
+			local function copy_shlib_to_output(shlib_name)
+				local inFile = path.join(prj.basedir, path.join("Bin", shlib_name))
+				local outFile = path.join(Config.BinariesDir, shlib_name)
+				local surround = function(str) return "%[" .. str .. "]" end
 
-					local buildcommand = string.format("{COPYFILE} %s %s", surround(inFile), surround(outFile))
-					buildcommands { buildcommand }
-					rebuildcommands { buildcommand }
-					cleancommands { "{DELETE} " .. surround(outFile) }
-				end
+				local buildcommand = string.format("{COPYFILE} %s %s", surround(inFile), surround(outFile))
+				buildcommands { buildcommand }
+				rebuildcommands { buildcommand }
+				cleancommands { "{DELETE} " .. surround(outFile) }
 			end
+
 			filter { "configurations:not *" .. Config.Configurations.Distribution .. "*" }; do
 				excludefrombuild "On"
 			end
@@ -585,11 +580,35 @@ local Packages = {
 				}
 				links {
 					"vulkan-1",
-					"spirv-cross-cppd",
-					"spirv-cross-cored",
-					"spirv-cross-glsld",
-					"spirv-cross-reflectd",
 				}
+			end
+
+			usage "VulkanSdk.Spirv"; do
+				uses {
+					"VulkanSdk"
+				}
+
+				filter { "configurations:*Debug" }; do
+					links {
+						"spirv-cross-cppd",
+						"spirv-cross-cored",
+						"spirv-cross-glsld",
+						"spirv-cross-reflectd",
+					}
+				end
+
+				filter { "configurations:not *Debug" }; do
+					links {
+						"spirv-cross-cpp",
+						"spirv-cross-core",
+						"spirv-cross-glsl",
+						"spirv-cross-reflect",
+					}
+				end
+
+				-- filter { "configurations:*" .. Config.Configurations.Distribution .. "*" }; do
+				-- 	copy_shlib_to_output "spirv-cross-reflect.dll"
+				-- end
 			end
 		end,
 	},

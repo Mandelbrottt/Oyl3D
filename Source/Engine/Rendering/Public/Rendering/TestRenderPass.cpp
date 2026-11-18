@@ -23,16 +23,9 @@ namespace Oyl
 
 		CreateDescriptors();
 		CreateRdoObjects();
-
-		auto* application = ModuleManager::GetModulePointer<IApplicationModule>("Application")->CurrentApplication();
-		application->OnDebugGuiCallback() += InstanceDelegate(OnDebugGui);
 	}
 
-	TestRenderPass::~TestRenderPass()
-	{
-		auto* application = ModuleManager::GetModulePointer<IApplicationModule>("Application")->CurrentApplication();
-		application->OnDebugGuiCallback() -= InstanceDelegate(OnDebugGui);
-	}
+	TestRenderPass::~TestRenderPass() {}
 
 	void
 	TestRenderPass::OnViewPortResize(Vector2u a_size)
@@ -56,11 +49,11 @@ namespace Oyl
 
 		a_commandBuffer.BindShader(m_shader);
 
-		UpdateUniformBuffer(m_material1, m_gunPosition1);
+		UpdateUniformBuffer(m_material1, 0);
 		a_commandBuffer.BindShaderBindingSet(m_shader, m_material1->GetShaderBindingSet());
 		a_commandBuffer.DrawVertexBuffer(m_vertexBuffer);
 
-		UpdateUniformBuffer(m_material2, m_gunPosition2);
+		UpdateUniformBuffer(m_material2, 2);
 		a_commandBuffer.BindShaderBindingSet(m_shader, m_material2->GetShaderBindingSet());
 		a_commandBuffer.DrawVertexBuffer(m_vertexBuffer);
 
@@ -147,31 +140,24 @@ namespace Oyl
 	}
 
 	void
-	TestRenderPass::UpdateUniformBuffer(const Material& a_material, const Vector3& a_position)
+	TestRenderPass::UpdateUniformBuffer(const Material& a_material, float a_timeOffset)
 	{
 		static auto startTime = Time::ElapsedTime();
 
 		auto currentTime = Time::ElapsedTime();
-		float time = float32(currentTime - startTime);
+		float time = float32(currentTime - startTime) + a_timeOffset;
 
-		Matrix4 model = Matrix4(Matrix::RotateY(time * 90)) * Matrix::Translate(a_position);
+		auto xRot = Matrix::RotateX(time * 90);
+		auto yRot = Matrix::RotateY(time / 2 * 90);
+		auto zRot = Matrix::RotateZ(time / 3 * 90);
+
+		Matrix4 model = Matrix::Translate({ 50, 0, 0 }) * Matrix4(xRot * yRot * zRot);
 		Matrix4 view = Matrix::LookAt(Vector3(0, 100.f, 100.f), Vector3(0, 0, 0));;
 		float sizeX = (float) m_colorAttachment->GetSize().x;
 		float sizeY = (float) m_colorAttachment->GetSize().y;
-		Matrix4 projection =  Matrix::Perspective(75, sizeX / sizeY, 0.01f, 1000.f);
+		Matrix4 projection = Matrix::Perspective(75, sizeX / sizeY, 0.01f, 1000.f);
 		Matrix4 mvp = model * view * projection;
 
 		a_material->SetMatrix("g_mvp", mvp);
-	}
-
-	void
-	TestRenderPass::OnDebugGui()
-	{
-		ImGui::Begin("Gun");
-
-		ImGui::DragFloat3("Gun Position 1", m_gunPosition1.data, 1, -100, -5);
-		ImGui::DragFloat3("Gun Position 2", m_gunPosition2.data, 1, 5, 100);
-
-		ImGui::End();
 	}
 }
