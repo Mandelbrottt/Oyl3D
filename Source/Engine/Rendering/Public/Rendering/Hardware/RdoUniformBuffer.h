@@ -28,7 +28,7 @@ namespace Oyl
 		CopyToBuffer(void* a_data, uint64 a_size) = 0;
 
 		template<typename TData>
-			requires !std::is_void_v<TData>
+			requires (!std::is_void_v<TData>)
 		void
 		CopyToBuffer(TData* a_data)
 		{

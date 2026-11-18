@@ -115,19 +115,19 @@ namespace Oyl
 	extern "C" \
 	__OYL__EXPORT_ATTR \
 	::Oyl::IModuleInterface* \
-	OYL_MODULE_INIT_FN_NAME##() \
+	OYL_MODULE_INIT_FN_NAME () \
 	{ \
 		__OYL__IMGUI_MODULE_INIT(); \
 		return new _module_class_(); \
 	} \
 	extern "C" \
 	void \
-	OYL_MODULE_DECLARE_FN_NAME##() {} \
+	OYL_MODULE_DECLARE_FN_NAME () {} \
 	\
 	extern "C" \
 	__OYL__EXPORT_ATTR \
 	void \
-	OYL_MODULE_DEPS_FN_NAME##(int* a_depc, const char*** a_depv) \
+	OYL_MODULE_DEPS_FN_NAME (int* a_depc, const char*** a_depv) \
 	{ \
 		static const char* deps[] = OYL_MODULE_DEPS_VAR_NAME; \
 		if (**deps == '\0') \

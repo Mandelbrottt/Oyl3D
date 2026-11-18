@@ -45,7 +45,7 @@ namespace Oyl
 		CopyToBuffer(const void* a_data, uint64 a_size, uint64 a_offset = 0) = 0;
 
 		template<typename TData>
-			requires !std::is_void_v<TData>
+			requires (!std::is_void_v<TData>)
 		void
 		CopyToBuffer(const TData* a_data, uint64 a_offset = 0)
 		{
