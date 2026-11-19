@@ -17,7 +17,7 @@ function m.onConfigDefineModuleDependencies(cfg)
 			cfg.links,
 			function(prj_link)
 				local link_prj = prj.workspace.projects[prj_link]
-				return link_prj and not link_prj._package
+				return link_prj and link_prj.kind == "SharedLib" and not link_prj._package
 			end
 		),
 		'"',

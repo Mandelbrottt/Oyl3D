@@ -145,6 +145,28 @@ namespace Oyl
 	}
 
 	void
+	ModuleManager::UnDiscoverModule(const String& a_moduleName)
+	{
+		OYL_PROFILE_SCOPEF("Oyl::ModuleManager::UnDiscoverModule(\"%s\")", a_moduleName.c_str());
+
+		String moduleName = a_moduleName;
+
+		auto iter = m_impl->modules.find(moduleName);
+		if (iter == m_impl->modules.end())
+		{
+			LogError("Trying to UnDiscover module \"{}\" that hasn't been discovered!", moduleName.c_str());
+			return;
+		}
+		auto& moduleInfo = iter->second;
+		if (moduleInfo.interfacePointer)
+			delete moduleInfo.interfacePointer;
+		if (moduleInfo.sharedLibHandle)
+			FreeSharedLibrary(moduleInfo.sharedLibHandle);
+
+		m_impl->modules.erase(iter);
+	}
+
+	void
 	ModuleManager::AddEngineModuleDirectory(StringView a_directory)
 	{
 		auto absPath = std::filesystem::absolute(std::string(a_directory)).string();

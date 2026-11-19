@@ -222,7 +222,16 @@ namespace Oyl
 		if (a_event.window != m_mainWindow)
 			return;
 
-		if (a_event.key == Input::KB_Q)
-			RequestExit(1);
+		if (a_event.key == Input::KB_U)
+		{
+			ModuleManager::Get().UnloadModule("TestRecompilableModule");
+			ModuleManager::Get().UnDiscoverModule("TestRecompilableModule");
+		}
+
+		if (a_event.key == Input::KB_R)
+		{
+			ModuleManager::Get().ScanModuleDirectories();
+			ModuleManager::LoadModulePointer("TestRecompilableModule");
+		}
 	}
 }

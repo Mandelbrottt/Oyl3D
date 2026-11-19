@@ -13,7 +13,7 @@ namespace Oyl
 
 	using Model = SharedPtr<ModelDesc>;
 
-	class ModelDesc
+	class RENDERING_EXPORT ModelDesc
 	{
 	public:
 		ModelDesc() = default;

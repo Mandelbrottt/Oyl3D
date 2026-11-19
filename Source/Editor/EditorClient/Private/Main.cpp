@@ -17,7 +17,7 @@
 
 #include <ImGui/imgui.h>
 
-#include "EditorClientApplication.h"
+#include "EditorClient/EditorClientApplication.h"
 
 int
 RunApplication()

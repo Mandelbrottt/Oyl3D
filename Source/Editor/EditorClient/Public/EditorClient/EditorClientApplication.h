@@ -59,6 +59,10 @@ namespace Oyl
 		void
 		OnDebugGui();
 
+		// TEMPORARY:
+		Renderer&
+		GetRenderer() { return m_renderer; }
+
 	private:
 		void
 		OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event);

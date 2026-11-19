@@ -25,8 +25,6 @@ namespace Oyl
 		void
 		SetGameViewPortColorAttachment(const RdoImageHandle& a_imageHandle)
 		{
-			if (m_gameViewPortColorAttachment == a_imageHandle)
-				return;
 			m_gameViewPortColorAttachment = a_imageHandle;
 		}
 

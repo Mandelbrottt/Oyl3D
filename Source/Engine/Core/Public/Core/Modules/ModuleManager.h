@@ -54,6 +54,11 @@ namespace Oyl
 		bool
 		UnloadModule(const String& a_moduleName, ModuleUnloadResult* a_outResult = nullptr);
 
+		// TEMPORARY:
+		CORE_EXPORT
+		void
+		UnDiscoverModule(const String& a_moduleName);
+
 		template<typename TInterface = IModuleInterface>
 			requires (std::is_convertible_v<TInterface*, IModuleInterface*>)
 		static
