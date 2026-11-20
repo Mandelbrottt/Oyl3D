@@ -611,33 +611,6 @@ local Packages = {
 					"vulkan-1",
 				}
 			end
-			usage "SpirvCross"; do
-				uses {
-					"VulkanSdk"
-				}
-
-				filter { "configurations:*Debug" }; do
-					links {
-						"spirv-cross-cppd",
-						"spirv-cross-cored",
-						"spirv-cross-glsld",
-						"spirv-cross-reflectd",
-					}
-				end
-
-				filter { "configurations:not *Debug" }; do
-					links {
-						"spirv-cross-cpp",
-						"spirv-cross-core",
-						"spirv-cross-glsl",
-						"spirv-cross-reflect",
-					}
-				end
-
-				-- filter { "configurations:*" .. Config.Configurations.Distribution .. "*" }; do
-				-- 	copy_shlib_to_output "spirv-cross-reflect.dll"
-				-- end
-			end
 		end,
 	},
 	YamlCpp = {
