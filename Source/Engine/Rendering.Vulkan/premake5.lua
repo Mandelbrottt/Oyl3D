@@ -20,7 +20,7 @@ project "Rendering.Vulkan"; do
 		uses {
 			"Rendering",
 			"VulkanSdk",
-			"SpirvCross",
+			"SpirvReflect",
 		}
 	end
 end
