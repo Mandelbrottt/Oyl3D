@@ -46,7 +46,7 @@ namespace Oyl
 	}
 
 	void
-	ImGuiRenderer::Render(ICommandBuffer& a_commandBuffer)
+	ImGuiRenderer::Render(IRdoCommandBuffer& a_commandBuffer)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -73,7 +73,7 @@ namespace Oyl
 		m_gameViewPortImageHandle.Reset();
 	}
 
-	const ImageHandle&
+	const RdoImageHandle&
 	ImGuiRenderer::GetRenderedImageHandle() const
 	{
 		return m_imGuiImpl->GetRenderedImageHandle();

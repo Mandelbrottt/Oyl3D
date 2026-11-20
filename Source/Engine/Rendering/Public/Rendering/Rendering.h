@@ -7,6 +7,8 @@
 
 #include "ImGui/IImGuiRenderer.h"
 
+#include "Objects/Model.h"
+
 #include "Rendering/RenderingEnums.h"
 
 namespace Oyl
@@ -72,6 +74,18 @@ namespace Oyl
 		virtual
 		UniquePtr<IImGuiRenderer>
 		CreateImGuiRenderer() = 0;
+
+		virtual
+		void
+		RegisterModelLoaderFactory(IModelLoaderFactory& a_factory) = 0;
+
+		virtual
+		void
+		UnregisterModelLoaderFactory(IModelLoaderFactory& a_factory) = 0;
+
+		virtual
+		ModelDesc
+		CreateModel(StringView a_filename) = 0;
 
 		bool
 		SupportsHotReload() override

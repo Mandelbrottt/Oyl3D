@@ -10,7 +10,9 @@ project "Application"; do
 
 	-- reflection "On"
 
-	uses {
-		"Core",
-	}
+	usage "PUBLIC"; do
+		uses {
+			"Core",
+		}
+	end
 end

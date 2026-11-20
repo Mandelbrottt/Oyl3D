@@ -5,13 +5,13 @@
 #include <Core/Containers/ArrayMap.h>
 #include <Core/Containers/UniquePtr.h>
 
-#include "Device.h"
-#include "PresentTarget.h"
 #include "RenderGraph.h"
 
 #include "ImGui/IImGuiRenderer.h"
 
 #include "Rendering/RenderContext.h"
+#include "Rendering/Hardware/HardwarePresentTarget.h"
+#include "Rendering/Hardware/RenderDevice.h"
 
 namespace Oyl
 {
@@ -19,15 +19,15 @@ namespace Oyl
 	{
 		IApplicationWindow* window;
 
-		PresentTargetHandle presentTarget = nullptr;
-		SwapChainHandle swapChain = nullptr;
+		HardwarePresentTargetHandle presentTarget = nullptr;
+		RdoSwapChainHandle swapChain = nullptr;
 
-		CommandPoolHandle commandPool = nullptr;
-		Array<CommandBufferHandle> commandBuffers;
+		RdoCommandPoolHandle commandPool = nullptr;
+		Array<RdoCommandBufferHandle> commandBuffers;
 
-		Array<SemaphoreHandle> presentCompleteSemaphores;
-		Array<SemaphoreHandle> renderFinishedSemaphores;
-		Array<FenceHandle> inFlightFences;
+		Array<RdoSemaphoreHandle> presentCompleteSemaphores;
+		Array<RdoSemaphoreHandle> renderFinishedSemaphores;
+		Array<RdoFenceHandle> inFlightFences;
 
 		uint32 frameIndex = 0;
 	};
@@ -101,12 +101,12 @@ namespace Oyl
 		RecreateSwapChain(RendererWindowData& a_windowData);
 
 		void
-		ResizeRenderGraphViewPort(const ISwapChain& a_swapChain);
+		ResizeRenderGraphViewPort(const IRdoSwapChain& a_swapChain);
 
 	private:
 		UniquePtr<IRenderContext> m_renderContext;
 		UniquePtr<IImGuiRenderer> m_imGuiRenderer;
-		DeviceHandle m_device = nullptr;
+		RenderDeviceHandle m_device = nullptr;
 
 		SharedPtr<IShaderCompiler> m_shaderCompiler;
 

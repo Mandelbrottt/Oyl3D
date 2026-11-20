@@ -12,5 +12,5 @@ namespace Oyl
 		ShouldAutoload() override { return true; }
 	};
 
-	OYL_MODULE_DECLARE(Core, CoreModule)
+	OYL_MODULE_DECLARE(CoreModule)
 }

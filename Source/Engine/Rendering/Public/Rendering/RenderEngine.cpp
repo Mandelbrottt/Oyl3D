@@ -2,11 +2,13 @@
 
 #include <Core/Logging/Logging.h>
 
+#include "Hardware/RenderDevice.h"
+
 namespace Oyl
 {
 	struct RenderEngine::Impl
 	{
-		DeviceHandle device = nullptr;
+		RenderDeviceHandle device = nullptr;
 		SharedPtr<IShaderCompiler> shaderCompiler;
 	};
 
@@ -25,7 +27,7 @@ namespace Oyl
 		return instance;
 	}
 
-	IDevice&
+	IRenderDevice&
 	RenderEngine::GetDevice() const
 	{
 		OYL_ASSERT(m_impl->device);
@@ -33,7 +35,7 @@ namespace Oyl
 	}
 
 	void
-	RenderEngine::RegisterDevice(const DeviceHandle& a_device)
+	RenderEngine::RegisterDevice(const RenderDeviceHandle& a_device)
 	{
 		if (!a_device)
 			return;
@@ -49,7 +51,7 @@ namespace Oyl
 	}
 
 	void
-	RenderEngine::UnregisterDevice(const DeviceHandle& a_device)
+	RenderEngine::UnregisterDevice(const RenderDeviceHandle& a_device)
 	{
 		if (!a_device)
 			return;

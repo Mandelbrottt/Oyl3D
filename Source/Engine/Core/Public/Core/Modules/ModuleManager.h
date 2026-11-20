@@ -102,34 +102,34 @@ namespace Oyl
 	};
 }
 
-#define OYL_MODULE_INIT_FN_NAME(_module_name_) ModuleInit_##_module_name_
-#define OYL_MODULE_DEPS_FN_NAME(_module_name_) ModuleDeps_##_module_name_
-#define OYL_MODULE_DECLARE_FN_NAME(_module_name_) _DECLARE_MODULE_##_module_name_
-#define OYL_MODULE_DEPS_MACRO(_module_name_) _module_name_
+#define OYL_MODULE_INIT_FN_NAME CAT2(ModuleInit_, EXPAND(OYL_MODULE_CURRENT_AS_MACRO))
+#define OYL_MODULE_DEPS_FN_NAME CAT2(ModuleDeps_, EXPAND(OYL_MODULE_CURRENT_AS_MACRO))
+#define OYL_MODULE_DECLARE_FN_NAME CAT2(_DECLARE_MODULE_, EXPAND(OYL_MODULE_CURRENT_AS_MACRO))
+#define OYL_MODULE_DEPS_VAR_NAME CAT2(EXPAND(OYL_MODULE_CURRENT_AS_MACRO), _DEPENDENCIES)
 
 #define EXPAND(a) a
 #define CAT(a, b) a##b
 #define CAT2(a, b) CAT(a, b)
 
-#define OYL_MODULE_DECLARE(_module_name_, _module_class_) \
+#define OYL_MODULE_DECLARE(_module_class_) \
 	extern "C" \
 	__OYL__EXPORT_ATTR \
 	::Oyl::IModuleInterface* \
-	OYL_MODULE_INIT_FN_NAME(_module_name_)() \
+	OYL_MODULE_INIT_FN_NAME () \
 	{ \
 		__OYL__IMGUI_MODULE_INIT(); \
 		return new _module_class_(); \
 	} \
 	extern "C" \
 	void \
-	OYL_MODULE_DECLARE_FN_NAME(_module_name_)() { static_assert(::Oyl::StringView(#_module_name_) == OYL_MODULE_CURRENT); } \
+	OYL_MODULE_DECLARE_FN_NAME () {} \
 	\
 	extern "C" \
 	__OYL__EXPORT_ATTR \
 	void \
-	OYL_MODULE_DEPS_FN_NAME(_module_name_)(int* a_depc, const char*** a_depv) \
+	OYL_MODULE_DEPS_FN_NAME (int* a_depc, const char*** a_depv) \
 	{ \
-		static const char* deps[] = CAT2(EXPAND(OYL_MODULE_CURRENT_AS_MACRO), _DEPENDENCIES); \
+		static const char* deps[] = OYL_MODULE_DEPS_VAR_NAME; \
 		if (**deps == '\0') \
 		{ \
 			*a_depc = 0; \

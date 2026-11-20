@@ -23,9 +23,12 @@ int
 RunApplication()
 {
 	Oyl::EditorClientApplication application;
+
 	auto fps = Oyl::CommandLine::GetInt("fps");
-	if (fps.has_value() && fps >= 0)
-		application.SetTargetFramerate(*fps);
+	if (!fps)
+		fps = 60;
+	application.SetTargetFramerate(*fps);
+
 	application.OnUpdateCallback() += Oyl::Time::Internal::Update;
 	application.OnUpdateCallback() += []
 	{

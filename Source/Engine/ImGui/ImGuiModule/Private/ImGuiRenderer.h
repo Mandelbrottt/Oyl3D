@@ -7,7 +7,7 @@
 namespace Oyl
 {
 	class IImGuiImpl;
-	class ISwapChain;
+	class IRdoSwapChain;
 
 	class ImGuiRenderer : public IImGuiRenderer
 	{
@@ -19,7 +19,7 @@ namespace Oyl
 		Update() override;
 
 		void
-		Render(ICommandBuffer& a_commandBuffer) override;
+		Render(IRdoCommandBuffer& a_commandBuffer) override;
 
 		void
 		Shutdown() override;
@@ -27,17 +27,17 @@ namespace Oyl
 		Renderer&
 		GetRenderer() const override { return *m_renderer; }
 
-		const ImageHandle&
+		const RdoImageHandle&
 		GetRenderedImageHandle() const override;
 
 		const MulticastDelegate<void()>&
 		OnDebugGuiCallback() const override { return m_onDebugGuiCallback; }
 
-		const ImageHandle&
+		const RdoImageHandle&
 		GetGameViewPortImageHandle() override { return m_gameViewPortImageHandle; }
 
 		void
-		SetGameViewPortImageHandle(const ImageHandle& a_imageHandle) override
+		SetGameViewPortImageHandle(const RdoImageHandle& a_imageHandle) override
 		{
 			m_gameViewPortImageHandle = a_imageHandle;
 		}
@@ -52,6 +52,6 @@ namespace Oyl
 
 		std::mutex m_renderMutex;
 
-		ImageHandle m_gameViewPortImageHandle = nullptr;
+		RdoImageHandle m_gameViewPortImageHandle = nullptr;
 	};
 }

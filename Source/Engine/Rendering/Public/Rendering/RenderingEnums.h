@@ -108,12 +108,19 @@ namespace Oyl
 
 	//////////////////////////////////////////////////////////////////////////////
 
-	enum class ShaderProfile : uint32
+	enum class ShaderProfileFlagBits : uint32
 	{
-		None,
+		None = 0,
 
-		Vertex,
-		Geometry,
-		Fragment,
+		Vertex = 1 << 0,
+
+		Geometry = 1 << 1,
+
+		Fragment = 1 << 2,
+		Pixel = Fragment,
 	};
+
+	OYL_ENUM_CLASS_BITWISE_OPERATIONS(ShaderProfileFlagBits)
+
+	using ShaderProfileFlags = EnumFlags<ShaderProfileFlagBits>;
 }

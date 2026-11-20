@@ -10,15 +10,13 @@ project "GlfwModule"; do
 
 	-- reflection "On"
 
-	uses {
-		"Core",
-		"Application",
-		"Glfw",
-	}
-
 	-- ImGui_Impl* functions use #include "imgui.h"
 	includedirsafter {
 		'%{wks.projects["ImGui"].basedir}'
+	}
+
+	uses {
+		"Glfw",
 	}
 
 	usage "PUBLIC"; do

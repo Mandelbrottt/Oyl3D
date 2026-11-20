@@ -82,27 +82,12 @@ namespace Oyl
 			m_byteCode.insert(m_byteCode.end(), a_params.buffer, a_params.buffer + a_params.bufferLength);
 
 		m_entryPoint = a_params.entryPoint;
+
+		m_inputBindings = a_params.inputBindings;
+		m_bufferBindings = a_params.bufferBindings;
 	}
 
 	ShaderStage::~ShaderStage() {}
-
-	ShaderProfile
-	ShaderStage::GetShaderProfile() const
-	{
-		return m_shaderProfile;
-	}
-
-	StringView
-	ShaderStage::GetEntryPoint() const
-	{
-		return m_entryPoint;
-	}
-
-	const Array<byte>&
-	ShaderStage::GetByteCode() const
-	{
-		return m_byteCode;
-	}
 
 	ShaderCompileResult::ShaderCompileResult() {}
 
@@ -115,24 +100,6 @@ namespace Oyl
 	}
 
 	ShaderCompileResult::~ShaderCompileResult() {}
-
-	StringView
-	ShaderCompileResult::GetFilePath() const
-	{
-		return m_filePath;
-	}
-
-	StringView
-	ShaderCompileResult::GetSourceCode() const
-	{
-		return m_sourceCode;
-	}
-
-	const Array<ShaderStage>&
-	ShaderCompileResult::GetShaderStages() const
-	{
-		return m_stages;
-	}
 }
 
 namespace

@@ -34,7 +34,7 @@ namespace Oyl
 
 		m_renderContext->Init();
 
-		PresentTargetHandle presentTarget = nullptr;
+		HardwarePresentTargetHandle presentTarget = nullptr;
 		if (a_mainWindow)
 		{
 			RendererWindowData& data = m_windowDataMap[a_mainWindow];
@@ -217,7 +217,7 @@ namespace Oyl
 
 		const auto& graphicsQueue = *m_device->GetCommandQueue(CommandQueueFlagBits::Graphics);
 		graphicsQueue.Submit(
-			CommandQueueSubmitParams {
+			RdoCommandQueueSubmitParams {
 				.commandBuffer = *a_windowData.commandBuffers[a_windowData.frameIndex],
 				.waitSemaphore = *presentCompleteSemaphore,
 				.signalSemaphore = *renderFinishedSemaphore,
@@ -227,7 +227,7 @@ namespace Oyl
 		);
 
 		bool result = graphicsQueue.Present(
-			CommandQueuePresentParams {
+			RdoCommandQueuePresentParams {
 				.swapChain = swapChain,
 				.waitSemaphore = *renderFinishedSemaphore
 			}
@@ -250,7 +250,7 @@ namespace Oyl
 
 		m_renderGraph.Execute(*commandBuffer);
 
-		ImageHandle finalColorOutput = nullptr;
+		RdoImageHandle finalColorOutput = nullptr;
 
 		auto& sortedPasses = m_renderGraph.GetSortedRenderPasses();
 		if (!sortedPasses.Empty())
@@ -316,7 +316,7 @@ namespace Oyl
 	}
 
 	void
-	Renderer::ResizeRenderGraphViewPort(const ISwapChain& a_swapChain)
+	Renderer::ResizeRenderGraphViewPort(const IRdoSwapChain& a_swapChain)
 	{
 		m_renderGraph.ResizeViewPort(a_swapChain.GetSize());
 	}

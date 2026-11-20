@@ -1,19 +1,16 @@
 #pragma once
 
-#include <Core/Containers/UniquePtr.h>
 #include <Core/Preprocessor/Common.h>
 
-#include "Device.h"
-#include "PresentTarget.h"
+#include "Rendering/Hardware/HardwarePresentTarget.h"
+#include "Rendering/Hardware/RenderDevice.h"
 
 namespace Oyl
 {
-	struct IPresentTargetFactory;
-
-	struct IDeviceFactory;
-
 	class RENDERING_EXPORT RenderEngine
 	{
+		friend class Renderer;
+
 		RenderEngine();
 		~RenderEngine();
 
@@ -25,17 +22,18 @@ namespace Oyl
 		RenderEngine&
 		Get();
 
-		IDevice&
+		IRenderDevice&
 		GetDevice() const;
-
-		void
-		RegisterDevice(const DeviceHandle& a_device);
-
-		void
-		UnregisterDevice(const DeviceHandle& a_device);
 
 		IShaderCompiler&
 		GetShaderCompiler() const;
+
+	private:
+		void
+		RegisterDevice(const RenderDeviceHandle& a_device);
+
+		void
+		UnregisterDevice(const RenderDeviceHandle& a_device);
 
 		void
 		RegisterShaderCompiler(const SharedPtr<IShaderCompiler>& a_shaderCompiler);
@@ -47,30 +45,4 @@ namespace Oyl
 		struct Impl;
 		Impl* m_impl;
 	};
-
-	struct IPresentTargetFactory
-	{
-		virtual
-		~IPresentTargetFactory() = 0;
-
-		virtual
-		PresentTargetHandle
-		CreatePresentTarget(IApplicationWindow& a_window) = 0;
-	};
-
-	inline
-	IPresentTargetFactory::~IPresentTargetFactory() {}
-
-	struct IDeviceFactory
-	{
-		virtual
-		~IDeviceFactory() = 0;
-
-		virtual
-		DeviceHandle
-		CreateDevice(IPresentTarget& a_presentTarget) = 0;
-	};
-
-	inline
-	IDeviceFactory::~IDeviceFactory() {}
 }

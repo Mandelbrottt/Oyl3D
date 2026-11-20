@@ -3,8 +3,8 @@
 #include <Core/Containers/ArraySet.h>
 #include <Core/Containers/Set.h>
 
-#include "Rendering/CommandBuffer.h"
 #include "Rendering/RenderTarget.h"
+#include "Rendering/Hardware/RdoCommandBuffer.h"
 
 namespace Oyl
 {
@@ -15,28 +15,13 @@ namespace Oyl
 		~IRenderPass() = 0;
 
 		virtual
-		void
-		Execute(const ICommandBuffer& a_commandBuffer)
-		{
-			Begin(a_commandBuffer);
-			Render(a_commandBuffer);
-			End(a_commandBuffer);
-		}
-
-	protected:
-		virtual
-		void
-		Begin(const ICommandBuffer& a_commandBuffer) = 0;
+		bool
+		IsEnabled() { return true; }
 
 		virtual
 		void
-		Render(const ICommandBuffer& a_commandBuffer) = 0;
+		Render(const IRdoCommandBuffer& a_commandBuffer) = 0;
 
-		virtual
-		void
-		End(const ICommandBuffer& a_commandBuffer) = 0;
-
-	public:
 		virtual
 		void
 		OnViewPortResize(Vector2u a_size) = 0;

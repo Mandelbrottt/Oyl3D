@@ -56,7 +56,7 @@ namespace Oyl
 	NameOf()
 	{
 		constexpr auto& value = Internal::NameOf::TypeNameHolder<T>::value;
-		return StringView { value.data(), value.size() };
+		return StringView { value.data(), (uint32) value.size() };
 	}
 }
 

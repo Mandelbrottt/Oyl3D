@@ -124,5 +124,5 @@ namespace Oyl
 		return static_cast<TypeId>(hash);
 	}
 
-	#define typeidof(_type_) ::Oyl::GetTypeId<_type_>()
+	#define typeidof(...) ::Oyl::GetTypeId<__VA_ARGS__>()
 }

@@ -11,7 +11,7 @@ namespace Oyl
 		~IColorOutputRenderPass() = 0;
 
 		virtual
-		const ImageHandle&
+		const RdoImageHandle&
 		GetColorAttachment() const = 0;
 	};
 

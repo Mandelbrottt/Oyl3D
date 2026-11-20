@@ -1,6 +1,6 @@
 struct VertexInput
 {
-	float2 position : Position;
+	float3 position : Position;
 	float3 color : Color;
 };
 
@@ -10,12 +10,14 @@ struct VertexOutput
 	float3 color : Color;
 };
 
+float4x4 g_mvp;
+
 [shader("vertex")]
 VertexOutput
 VertMain(VertexInput a_input)
 {
 	VertexOutput output;
-	output.position = float4(a_input.position, 0.0, 1.0);
+	output.position = mul(g_mvp, float4(a_input.position, 1.0));
 	output.color = a_input.color;
 	return output;
 }

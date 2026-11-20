@@ -2,6 +2,218 @@ local Config = require "Config"
 
 ---@type { [string]: { OnProject: fun(prj), OnDepend: fun(prjcfg, packagecfg)? } }
 local Packages = {
+	Assimp = {
+		Git = {
+			Url = "https://github.com/assimp/assimp.git",
+			Ref = "v6.0.5"
+		},
+		OnProject = function(prj)
+			language "C++"
+			kind "SharedLib"
+
+			do
+				local config_h = io.readfile("include/assimp/config.h.in")
+				local config_h_lines = string.explode(config_h, "\n")
+				config_h = ""
+				for _, line in next, config_h_lines do
+					if string.contains(line, "#cmakedefine") then
+						line = "// " .. line
+					end
+					config_h = config_h .. line .. "\n"
+				end
+				io.writefile("include/assimp/config.h", config_h)
+			end
+			do
+				local revision_h = io.readfile("include/assimp/revision.h.in")
+
+				local current_sha = os.outputof("git rev-parse --short HEAD")
+				revision_h = revision_h:gsub("@GIT_COMMIT_HASH@", current_sha)
+
+				local current_branch = os.outputof("git rev-parse --abbrev-ref HEAD")
+				revision_h = revision_h:gsub("@GIT_BRANCH@", current_branch)
+
+				-- Update when Git.Ref is updated
+				revision_h = revision_h:gsub("@ASSIMP_VERSION_MAJOR@", "6")
+				revision_h = revision_h:gsub("@ASSIMP_VERSION_MINOR@", "0")
+				revision_h = revision_h:gsub("@ASSIMP_VERSION_PATCH@", "5")
+				revision_h = revision_h:gsub("@ASSIMP_PACKAGE_VERSION@", "0")
+
+				revision_h = revision_h:gsub("@CMAKE_SHARED_LIBRARY_PREFIX@", "")
+				revision_h = revision_h:gsub("@LIBRARY_SUFFIX@", "")
+				revision_h = revision_h:gsub("@CMAKE_DEBUG_POSTFIX@", "")
+
+				io.writefile("include/assimp/revision.h", revision_h)
+			end
+			do
+				local zconf_h = io.readfile("contrib/zlib/zconf.h.in")
+				io.writefile("contrib/zlib/zconf.h", zconf_h)
+			end
+
+			files {
+				"include/**",
+
+				"code/AssetLib/Collada/**",
+				"code/AssetLib/FBX/**",
+				"code/AssetLib/Obj/**",
+				"code/AssetLib/glTFCommon/**",
+				"code/AssetLib/glTF/**",
+				"code/AssetLib/glTF2/**",
+
+				"code/CApi/**",
+				"code/Common/**",
+				"code/Geometry/**",
+				"code/Material/**",
+				"code/Pbrt/**",
+				"code/PostProcessing/**",
+
+				"contrib/zlib/*",
+				"contrib/unzip/**",
+				"contrib/pugixml/**"
+			}
+
+			includedirs {
+				".",
+				"code",
+				"include",
+
+			}
+
+			includedirsafter {
+				"contrib",
+				"contrib/pugixml/src",
+				"contrib/rapidjson/include",
+				"contrib/unzip",
+				"contrib/utf8cpp/source",
+				"contrib/zlib",
+			}
+
+			-- links {
+			-- 	"zlib"
+			-- }
+
+			local excluded_file_formats = {
+				"3D",
+				"3DS",
+				"3MF",
+				"AC",
+				"AMF",
+				"ASE",
+				"ASSBIN",
+				"ASSJSON",
+				"ASSXML",
+				"B3D",
+				"BLEND",
+				"BVH",
+				"C4D",
+				"COB",
+				"CSM",
+				"DXF",
+				"HMP",
+				"IFC",
+				"IQM",
+				"IRR",
+				"IRRMESH",
+				"LWO",
+				"LWS",
+				"M3D",
+				"MD2",
+				"MD3",
+				"MD5",
+				"MDC",
+				"MDL",
+				"MMD",
+				"MS3D",
+				"NDO",
+				"NFF",
+				"OFF",
+				"OGRE",
+				"OPENGEX",
+				"PLY",
+				"Q3BSP",
+				"Q3D",
+				"RAW",
+				"SIB",
+				"SMD",
+				"STEP",
+				"STL",
+				"TERRAGEN",
+				"USD",
+				"X",
+				"X3D",
+				"XGL",
+			}
+
+			for _, format in ipairs(excluded_file_formats) do
+				defines {
+					"ASSIMP_BUILD_NO_" .. format .. "_IMPORTER",
+					"ASSIMP_BUILD_NO_" .. format .. "_EXPORTER",
+				}
+			end
+
+			defines {
+				-- "SWIG",
+				-- "ASSIMP_BUILD_NO_OWN_ZLIB",
+
+				-- "ASSIMP_BUILD_NO_MAKELEFTHANDED_PROCESS",
+				-- "ASSIMP_BUILD_NO_FLIPUVS_PROCESS",
+				-- "ASSIMP_BUILD_NO_FLIPWINDINGORDER_PROCESS",
+				-- "ASSIMP_BUILD_NO_CALCTANGENTS_PROCESS",
+				-- "ASSIMP_BUILD_NO_JOINVERTICES_PROCESS",
+				-- "ASSIMP_BUILD_NO_TRIANGULATE_PROCESS",
+				"ASSIMP_BUILD_NO_GENFACENORMALS_PROCESS",
+				-- "ASSIMP_BUILD_NO_GENVERTEXNORMALS_PROCESS",
+				"ASSIMP_BUILD_NO_REMOVEVC_PROCESS",
+				"ASSIMP_BUILD_NO_SPLITLARGEMESHES_PROCESS",
+				"ASSIMP_BUILD_NO_PRETRANSFORMVERTICES_PROCESS",
+				"ASSIMP_BUILD_NO_LIMITBONEWEIGHTS_PROCESS",
+				-- "ASSIMP_BUILD_NO_VALIDATEDS_PROCESS",
+				"ASSIMP_BUILD_NO_IMPROVECACHELOCALITY_PROCESS",
+				"ASSIMP_BUILD_NO_FIXINFACINGNORMALS_PROCESS",
+				"ASSIMP_BUILD_NO_REMOVE_REDUNDANTMATERIALS_PROCESS",
+				"ASSIMP_BUILD_NO_FINDINVALIDDATA_PROCESS",
+				"ASSIMP_BUILD_NO_FINDDEGENERATES_PROCESS",
+				"ASSIMP_BUILD_NO_SORTBYPTYPE_PROCESS",
+				"ASSIMP_BUILD_NO_GENUVCOORDS_PROCESS",
+				"ASSIMP_BUILD_NO_TRANSFORMTEXCOORDS_PROCESS",
+				"ASSIMP_BUILD_NO_FINDINSTANCES_PROCESS",
+				"ASSIMP_BUILD_NO_OPTIMIZEMESHES_PROCESS",
+				"ASSIMP_BUILD_NO_OPTIMIZEGRAPH_PROCESS",
+				"ASSIMP_BUILD_NO_SPLITBYBONECOUNT_PROCESS",
+				"ASSIMP_BUILD_NO_DEBONE_PROCESS",
+				"ASSIMP_BUILD_NO_EMBEDTEXTURES_PROCESS",
+				"ASSIMP_BUILD_NO_GLOBALSCALE_PROCESS",
+				"ASSIMP_BUILD_BOOST_WORKAROUND",
+
+				"RAPIDJSON_HAS_STDSTRING"
+			}
+
+			filter "action:vs*"; do
+				files {
+					"**.natvis"
+				}
+			end
+
+			filter "kind:SharedLib"; do
+				defines {
+					"ASSIMP_BUILD_DLL_EXPORT"
+				}
+			end
+
+			usage "INTERFACE"; do
+				includedirsafter {
+					"include"
+				}
+				links {
+					prj.name
+				}
+				filter { "kind:SharedLib" }; do
+					defines {
+						"ASSIMP_DLL",
+					}
+				end
+			end
+		end,
+	},
 	Clang = {
 		Remote = {
 			Url = (function()
@@ -133,7 +345,7 @@ local Packages = {
 
 			uses {
 				"Glfw",
-				"Vulkan",
+				"VulkanSdk",
 			}
 
 			-- Tight coupling with Core, but this is ok since everything that uses core will also use ImGui
@@ -247,6 +459,35 @@ local Packages = {
 			end
 		end,
 	},
+	SpirvCross = {
+		Git = {
+			Url = "https://github.com/KhronosGroup/SPIRV-Cross.git",
+			Ref = "vulkan-sdk-1.4.341.0"
+		},
+		OnProject = function(prj)
+			language "C++"
+			kind "StaticLib"
+
+			files {
+				"*.c",
+				"*.h",
+				"*.cpp",
+				"*.hpp",
+			}
+
+			filter "action:vs*"; do
+				files {
+					"*.natvis"
+				}
+			end
+
+			usage "INTERFACE"; do
+				links {
+					prj.name
+				}
+			end
+		end,
+	},
 	Tracy = {
 		Git = {
 			Url = "https://github.com/wolfpld/tracy.git",
@@ -313,7 +554,7 @@ local Packages = {
 			end
 		end,
 	},
-	Vulkan = {
+	VulkanSdk = {
 		Local = {
 			Path = assert(
 				os.getenv("VULKAN_SDK"),
@@ -338,21 +579,17 @@ local Packages = {
 				"Lib",
 			}
 
-			filter { "configurations:*" .. Config.Configurations.Distribution .. "*" }; do
-				local sharedLibsToCopy = {
-					"dxcompiler.dll"
-				}
-				for _, sharedLib in ipairs(sharedLibsToCopy) do
-					local inFile = path.join(prj.basedir, path.join("Bin", sharedLib))
-					local outFile = path.join(Config.BinariesDir, sharedLib)
-					local surround = function(str) return "%[" .. str .. "]" end
+			local function copy_shlib_to_output(shlib_name)
+				local inFile = path.join(prj.basedir, path.join("Bin", shlib_name))
+				local outFile = path.join(Config.BinariesDir, shlib_name)
+				local surround = function(str) return "%[" .. str .. "]" end
 
-					local buildcommand = string.format("{COPYFILE} %s %s", surround(inFile), surround(outFile))
-					buildcommands { buildcommand }
-					rebuildcommands { buildcommand }
-					cleancommands { "{DELETE} " .. surround(outFile) }
-				end
+				local buildcommand = string.format("{COPYFILE} %s %s", surround(inFile), surround(outFile))
+				buildcommands { buildcommand }
+				rebuildcommands { buildcommand }
+				cleancommands { "{DELETE} " .. surround(outFile) }
 			end
+
 			filter { "configurations:not *" .. Config.Configurations.Distribution .. "*" }; do
 				excludefrombuild "On"
 			end

@@ -85,5 +85,5 @@ namespace Oyl
 		bool m_applicationStarted = false;
 	};
 
-	OYL_MODULE_DECLARE(Application, ApplicationModule)
+	OYL_MODULE_DECLARE(ApplicationModule)
 }

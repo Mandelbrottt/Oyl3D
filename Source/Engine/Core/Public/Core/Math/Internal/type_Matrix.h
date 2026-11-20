@@ -224,8 +224,28 @@ namespace Oyl
 
 	#define _MATRIX_GENERATE_MEMBER_FUNCTIONS() \
 		constexpr \
+		bool \
+		operator ==(const Matrix_t& a_other) noexcept \
+		{ \
+			for (int y = 0; y < size_x; y++)  \
+				for (int x = 0; x < size_y; x++) \
+				{ \
+					if (data[y * size_x + x] != a_other.data[y * size_x + x]) \
+						return false; \
+				} \
+			return true; \
+		} \
+		\
+		constexpr \
+		bool \
+		operator !=(const Matrix_t& a_other) noexcept \
+		{ \
+			return !(*this == a_other); \
+		} \
+		\
+		constexpr \
 		Matrix_t& \
-		operator *=(Matrix_t a_other) noexcept \
+		operator *=(const Matrix_t& a_other) noexcept \
 		{ \
 			*this = *this * a_other; \
 			return *this; \

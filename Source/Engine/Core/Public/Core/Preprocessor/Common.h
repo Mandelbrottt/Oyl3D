@@ -97,11 +97,27 @@
 		_class_& \
 		operator =(const _class_&) = delete
 
+#	if defined(NO_COPY_ASSIGN)
+#		undef NO_COPY_ASSIGN
+#	endif
+#	define NO_COPY_ASSIGN(_class_) \
+		_class_(const _class_&) = default; \
+		_class_& \
+		operator =(const _class_&) = delete
+
 #	if defined(NO_MOVE)
 #		undef NO_MOVE
 #	endif
 #	define NO_MOVE(_class_) \
 		_class_(_class_&&) noexcept = delete; \
+		_class_& \
+		operator =(_class_&&) noexcept = delete
+
+#	if defined(NO_MOVE_ASSIGN)
+#		undef NO_MOVE_ASSIGN
+#	endif
+#	define NO_MOVE_ASSIGN(_class_) \
+		_class_(_class_&&) noexcept = default; \
 		_class_& \
 		operator =(_class_&&) noexcept = delete
 #pragma endregion Construction Macros

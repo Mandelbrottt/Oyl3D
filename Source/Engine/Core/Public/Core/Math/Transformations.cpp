@@ -11,14 +11,13 @@ namespace Oyl::Matrix
 	{
 		Matrix4 result { 0 };
 
-		float fovRadians = 1.f / std::tan(a_fieldOfView * 0.5f / Math::RAD_TO_DEG);
+		float tanFov = std::tan(a_fieldOfView * 0.5f * Math::DEG_TO_RAD);
 
-		result[0][0] = a_aspectRatio * fovRadians;
-		result[1][1] = fovRadians;
-		result[2][2] = a_farPlane / (a_farPlane - a_nearPlane);
-		result[3][2] = (-a_farPlane * a_nearPlane) / (a_farPlane - a_nearPlane);
-		result[2][3] = 1;
-
+		result[0][0] = 1.0f / (a_aspectRatio * tanFov);
+		result[1][1] = -1.0f / (tanFov);
+		result[2][2] = -(a_farPlane + a_nearPlane) / (a_farPlane - a_nearPlane);
+		result[2][3] = -1.0f;
+		result[3][2] = -(2 * a_farPlane * a_nearPlane) / (a_farPlane - a_nearPlane);
 		return result;
 	}
 
@@ -150,23 +149,27 @@ namespace Oyl::Matrix
 		return result;
 	}
 
-	// inspired by https://github.com/OneLoneCoder/videos/blob/master/OneLoneCoder_olcEngine3D_Part3.cpp
+	// Inspired by GLM lookAt_RH()
 	Matrix4
 	LookAt(Vector3 a_position, Vector3 a_target, Vector3 a_up)
 	{
-		Vector3 newForward = Vector::Normalize(a_target - a_position);
+		Vector3 f = Vector::Normalize(a_target - a_position);
+		Vector3 s = Vector::Normalize(Vector::Cross(f, a_up));
+		Vector3 u = Vector::Cross(s, f);
 
-		Vector3 a = newForward * Vector::Dot(a_up, newForward);
-		Vector3 newUp = Vector::Normalize(a_up - a);
-
-		Vector3 newRight = Vector::Cross(newUp, newForward);
-
-		Matrix4 result;
-		result[0] = Vector4(newRight,   0.0f);
-		result[1] = Vector4(newUp,      0.0f);
-		result[2] = Vector4(newForward, 0.0f);
-		result[3] = Vector4(a_position, 1.0f);
-
+		Matrix4 result = Matrix4::Identity();
+		result[0][0] = s.x;
+		result[1][0] = s.y;
+		result[2][0] = s.z;
+		result[0][1] = u.x;
+		result[1][1] = u.y;
+		result[2][1] = u.z;
+		result[0][2] = -f.x;
+		result[1][2] = -f.y;
+		result[2][2] = -f.z;
+		result[3][0] = -Vector::Dot(s, a_position);
+		result[3][1] = -Vector::Dot(u, a_position);
+		result[3][2] = Vector::Dot(f, a_position);
 		return result;
 	}
 

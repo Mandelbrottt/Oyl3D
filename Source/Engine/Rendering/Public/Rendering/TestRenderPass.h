@@ -1,10 +1,15 @@
 #pragma once
 
-#include "Image.h"
 #include "RenderTarget.h"
-#include "Shader.h"
-#include "VertexBuffer.h"
 
+#include "Rendering/Hardware/RdoImage.h"
+#include "Rendering/Hardware/RdoShader.h"
+#include "Rendering/Hardware/RdoUniformBuffer.h"
+#include "Rendering/Hardware/RdoVertexBuffer.h"
+#include "Rendering/Objects/Mesh.h"
+#include "Rendering/Objects/Model.h"
+#include "Rendering/Objects/Material.h"
+#include "Rendering/Objects/Shader.h"
 #include "Rendering/RenderPass/RenderPass.h"
 
 #include "RenderPass/ColorOutputRenderPass.h"
@@ -20,32 +25,41 @@ namespace Oyl
 		TestRenderPass(Vector2u a_size);
 
 		virtual
-		~TestRenderPass() = default;
+		~TestRenderPass();
 
 		void
 		OnViewPortResize(Vector2u a_size) override;
 
-		const ImageHandle&
+		const RdoImageHandle&
 		GetColorAttachment() const override { return m_colorAttachment; }
 
-	protected:
 		void
-		Begin(const ICommandBuffer& a_commandBuffer) override;
-
-		void
-		Render(const ICommandBuffer& a_commandBuffer) override;
-
-		void
-		End(const ICommandBuffer& a_commandBuffer) override;
+		Render(const IRdoCommandBuffer& a_commandBuffer) override;
 
 	private:
 		void
 		CreateRenderTarget(Vector2u a_size);
 
-	private:
-		ImageHandle m_colorAttachment = nullptr;
+		void
+		CreateDescriptors();
 
-		ShaderHandle m_shader = nullptr;
-		VertexBufferHandle m_vertexBuffer = nullptr;
+		void
+		CreateRdoObjects();
+
+		void
+		UpdateUniformBuffer(const Material& a_material, float a_timeOffset);
+
+	private:
+		RdoImageHandle m_colorAttachment = nullptr;
+
+		Material m_material1;
+		Material m_material2;
+		Model m_model;
+
+		RdoShaderHandle m_shader = nullptr;
+		RdoVertexBufferHandle m_vertexBuffer = nullptr;
+
+		Vector3 m_gunPosition1;
+		Vector3 m_gunPosition2;
 	};
 }
