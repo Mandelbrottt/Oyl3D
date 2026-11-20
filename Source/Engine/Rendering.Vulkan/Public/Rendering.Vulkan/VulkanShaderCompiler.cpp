@@ -1,7 +1,6 @@
 #include "VulkanShaderCompiler.h"
 
 #include <Core/Containers/ArrayMap.h>
-#include <Core/Math/Vector.h>
 #include <Core/Math/Matrix.h>
 #include <Core/Platform/SharedLibrary.h>
 
@@ -12,7 +11,7 @@
 
 #include <dxc/dxcapi.h>
 
-#include <spirv_cross/spirv_reflect.hpp>
+#include <SpirvCross/spirv_reflect.hpp>
 
 namespace
 {

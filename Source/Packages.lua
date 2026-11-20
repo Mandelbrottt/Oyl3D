@@ -459,6 +459,35 @@ local Packages = {
 			end
 		end,
 	},
+	SpirvCross = {
+		Git = {
+			Url = "https://github.com/KhronosGroup/SPIRV-Cross.git",
+			Ref = "vulkan-sdk-1.4.341.0"
+		},
+		OnProject = function(prj)
+			language "C++"
+			kind "StaticLib"
+
+			files {
+				"*.c",
+				"*.h",
+				"*.cpp",
+				"*.hpp",
+			}
+
+			filter "action:vs*"; do
+				files {
+					"*.natvis"
+				}
+			end
+
+			usage "INTERFACE"; do
+				links {
+					prj.name
+				}
+			end
+		end,
+	},
 	Tracy = {
 		Git = {
 			Url = "https://github.com/wolfpld/tracy.git",
@@ -582,8 +611,7 @@ local Packages = {
 					"vulkan-1",
 				}
 			end
-
-			usage "VulkanSdk.Spirv"; do
+			usage "SpirvCross"; do
 				uses {
 					"VulkanSdk"
 				}
