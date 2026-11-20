@@ -12,10 +12,11 @@ namespace Oyl
 		ShaderProfileFlagBits stage;
 
 		String name;
-		uint location;
+		uint32 location;
+
 		TypeId type;
-		uint size;
-		uint offset;
+		uint32 size;
+		uint32 offset;
 	};
 
 	struct ShaderBufferBinding
@@ -23,16 +24,16 @@ namespace Oyl
 		ShaderProfileFlagBits stage;
 
 		String name;
-		uint binding;
-		uint stride;
+		uint32 binding;
+		uint32 stride;
 
 		struct BufferMember
 		{
 			String name;
 			TypeId type;
 
-			uint stride;
-			uint offset;
+			uint32 stride;
+			uint32 offset;
 		};
 
 		Array<BufferMember> members;

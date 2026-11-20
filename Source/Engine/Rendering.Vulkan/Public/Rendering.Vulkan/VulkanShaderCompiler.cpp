@@ -11,7 +11,7 @@
 
 #include <dxc/dxcapi.h>
 
-#include <SpirvCross/spirv_reflect.hpp>
+#include <SpirvReflect/spirv_reflect.h>
 
 namespace
 {
@@ -55,8 +55,21 @@ namespace
 
 namespace Oyl
 {
-	TypeId
-	GetTypeIdFromBaseTypeInfo(spirv_cross::SPIRType::BaseType a_baseType, uint a_width, uint a_vecSize, uint a_columns);
+	static
+	bool
+	GetTypeInformationFromSpirvTypeDescription(
+		const SpvReflectTypeDescription& a_typeDescription,
+		TypeId* a_outTypeId,
+		uint32* a_outStride
+	);
+
+	static
+	Array<ShaderInputBinding>
+	GetShaderInputBindingsFromShaderModule(const SpvReflectShaderModule& a_module, ShaderProfileFlagBits a_stage);
+
+	static
+	Array<ShaderBufferBinding>
+	GetShaderBufferBindingsFromShaderModule(const SpvReflectShaderModule& a_module, ShaderProfileFlagBits a_stage);
 
 #if defined(OYL_WINDOWS)
 	struct VulkanShaderCompiler::Impl
@@ -408,89 +421,150 @@ namespace Oyl
 		CComPtr<IDxcBlob> code;
 		hres = compileResult->GetResult(&code);
 
-		spirv_cross::CompilerReflection reflection((uint32_t*) code->GetBufferPointer(), code->GetBufferSize() / 4);
-
-		Array<ShaderInputBinding> inputBindings;
-
-		uint stride = 0;
-		for (const auto& stageInput : reflection.get_shader_resources().stage_inputs)
-		{
-			ShaderInputBinding inputBinding;
-			inputBinding.stage = a_profile;
-			inputBinding.name = reflection.get_name(stageInput.id);
-			inputBinding.location = reflection.get_decoration(stageInput.id, spv::DecorationLocation);
-
-			const auto& type = reflection.get_type(stageInput.type_id);
-			inputBinding.type = GetTypeIdFromBaseTypeInfo(type.basetype, type.width, type.vecsize, type.columns);
-			inputBinding.size = (type.width / 8) * type.vecsize * type.columns; // width is in bits
-			inputBinding.offset = stride;
-			inputBindings.Add(inputBinding);
-
-			stride += inputBinding.size;
-		}
-
-		Array<ShaderBufferBinding> bufferBindings;
-		for (const auto& uniformBuffer : reflection.get_shader_resources().uniform_buffers)
-		{
-			auto activeBufferRanges = reflection.get_active_buffer_ranges(uniformBuffer.id);
-			if (activeBufferRanges.size() == 0)
-				continue;
-
-			ShaderBufferBinding bufferBinding;
-			bufferBinding.stage = a_profile;
-			bufferBinding.name = reflection.get_name(uniformBuffer.id);
-			bufferBinding.binding = reflection.get_decoration(uniformBuffer.id, spv::DecorationBinding);
-			bufferBinding.stride = 0;
-			auto bufferType = reflection.get_type(uniformBuffer.base_type_id);
-			for (auto activeMember : activeBufferRanges)
-			{
-				ShaderBufferBinding::BufferMember bufferMember;
-				bufferMember.name = reflection.get_member_name(uniformBuffer.base_type_id, activeMember.index);
-				bufferMember.offset = (uint) activeMember.offset;
-				bufferMember.stride = (uint) activeMember.range;
-				const auto& bufferMemberType = reflection.get_type(bufferType.member_types[activeMember.index]);
-				bufferMember.type = GetTypeIdFromBaseTypeInfo(bufferMemberType.basetype, bufferMemberType.width, bufferMemberType.vecsize, bufferMemberType.columns);
-				bufferBinding.members.Add(bufferMember);
-			}
-			if (!bufferBinding.members.Empty())
-			{
-				bufferBinding.stride = bufferBinding.members.back().offset + bufferBinding.members.back().stride;
-			}
-			bufferBindings.Add(bufferBinding);
-		}
+		spv_reflect::ShaderModule reflect { code->GetBufferSize(), code->GetBufferPointer(), SPV_REFLECT_MODULE_FLAG_NO_COPY };
 
 		auto params = ShaderStageCreateParams {
 			.shaderProfile = a_profile,
 			.buffer = (byte*) code->GetBufferPointer(),
 			.bufferLength = code->GetBufferSize(),
 			.entryPoint = std::string(entryPoint),
-			.inputBindings = inputBindings,
-			.bufferBindings = bufferBindings,
+			.inputBindings = GetShaderInputBindingsFromShaderModule(reflect.GetShaderModule(), a_profile),
+			.bufferBindings = GetShaderBufferBindingsFromShaderModule(reflect.GetShaderModule(), a_profile),
 		};
 		return ShaderStage(params);
 	}
 
-	TypeId
-	GetTypeIdFromBaseTypeInfo(
-		spirv_cross::SPIRType::BaseType a_baseType,
-		uint a_width,
-		uint a_vecSize,
-		uint a_columns
+	Array<ShaderInputBinding>
+	GetShaderInputBindingsFromShaderModule(const SpvReflectShaderModule& a_module, ShaderProfileFlagBits a_stage)
+	{
+		uint32 stride = 0;
+		Array<ShaderInputBinding> result;
+		for (uint32 i = 0; i < a_module.input_variable_count; i++)
+		{
+			const auto* spvInputVariable = a_module.input_variables[i];
+
+			// Not valid, unused, or reserved
+			if (spvInputVariable->name == nullptr)
+				continue;
+
+			ShaderInputBinding inputBinding;
+			inputBinding.stage = a_stage;
+
+			StringView inputVariableName = spvInputVariable->semantic != nullptr
+				                               ? spvInputVariable->semantic
+				                               : spvInputVariable->name;
+			// Remove in.var. from names
+			constexpr char inDotVarDot[] = "in.var.";
+			if (auto index = inputVariableName.find(inDotVarDot); index != std::string::npos)
+				inputVariableName = inputVariableName.substr(std::size(inDotVarDot) - 1);
+			inputBinding.name = String(inputVariableName);
+
+			inputBinding.location = spvInputVariable->location;
+			GetTypeInformationFromSpirvTypeDescription(
+				*spvInputVariable->type_description,
+				&inputBinding.type,
+				&inputBinding.size);
+
+			// TEMPORARY: Offset should be based on the incoming data, we use location to tag what data to bind where
+			inputBinding.offset = stride;
+			stride += inputBinding.size;
+
+			result.Add(inputBinding);
+		}
+		return result;
+	}
+
+	Array<ShaderBufferBinding>
+	GetShaderBufferBindingsFromShaderModule(const SpvReflectShaderModule& a_module, ShaderProfileFlagBits a_stage)
+	{
+		Array<ShaderBufferBinding> result;
+		for (uint32 setIndex = 0; setIndex < a_module.descriptor_set_count; setIndex++)
+		{
+			const auto& spvDescriptorSet = a_module.descriptor_sets[setIndex];
+			for (uint32 bindingIndex = 0; bindingIndex < spvDescriptorSet.binding_count; bindingIndex++)
+			{
+				const auto* spvDescriptorBinding = spvDescriptorSet.bindings[bindingIndex];
+
+				if (!spvDescriptorBinding->accessed)
+					continue;
+
+				const auto& spvDescriptorBlock = spvDescriptorBinding->block;
+				ShaderBufferBinding bufferBinding;
+				bufferBinding.stage = a_stage;
+				bufferBinding.name = spvDescriptorBlock.name;
+				bufferBinding.binding = spvDescriptorBinding->binding;
+				bufferBinding.stride = spvDescriptorBlock.size;
+
+				// Iterate the members of the buffer
+				for (uint32 memberIndex = 0; memberIndex < spvDescriptorBlock.member_count; memberIndex++)
+				{
+					const auto& spvMember = spvDescriptorBlock.members[memberIndex];
+
+					ShaderBufferBinding::BufferMember bufferMember;
+					bufferMember.name = spvMember.name;
+					GetTypeInformationFromSpirvTypeDescription(
+						*spvMember.type_description,
+						&bufferMember.type,
+						&bufferMember.stride);
+					bufferMember.offset = spvMember.offset;
+					bufferBinding.members.Add(bufferMember);
+				}
+
+				result.Add(bufferBinding);
+			}
+		}
+		return result;
+	}
+
+	bool
+	GetTypeInformationFromSpirvTypeDescription(
+		const SpvReflectTypeDescription& a_typeDescription,
+		TypeId* a_outTypeId,
+		uint32* a_outStride
 	)
 	{
-		OYL_UNUSED(a_width);
-		using BaseType = spirv_cross::SPIRType::BaseType;
-		if (a_baseType == BaseType::Float)
+		OYL_ASSERT(a_outTypeId && a_outStride);
+
+		if (a_typeDescription.type_flags & SPV_REFLECT_TYPE_FLAG_FLOAT)
 		{
-			TypeId floatTypes[4][4] = {
-				{ typeidof(float), typeidof(Vector_t<2, float>), typeidof(Vector_t<3, float>), typeidof(Vector_t<4, float>), },
-				{ typeidof(Matrix_t<2, 1, float>), typeidof(Matrix_t<2, 2, float>), typeidof(Matrix_t<2, 3, float>), typeidof(Matrix_t<2, 4, float>), },
-				{ typeidof(Matrix_t<3, 1, float>), typeidof(Matrix_t<3, 2, float>), typeidof(Matrix_t<3, 3, float>), typeidof(Matrix_t<3, 4, float>), },
-				{ typeidof(Matrix_t<4, 1, float>), typeidof(Matrix_t<4, 2, float>), typeidof(Matrix_t<4, 3, float>), typeidof(Matrix_t<4, 4, float>), },
-			};
-			return floatTypes[a_columns - 1][a_vecSize - 1]; // columns and vecSize are 1-base indexed
+			const auto& [width, signedness] = a_typeDescription.traits.numeric.scalar;
+
+			// Width measured in bits
+			*a_outStride = width / 8;
+
+			if (a_typeDescription.type_flags & SPV_REFLECT_TYPE_FLAG_MATRIX)
+			{
+				constexpr TypeId matrixTypeIds[4][4] = {
+					{ typeidof(Matrix_t<1, 1, float>), typeidof(Matrix_t<1, 2, float>), typeidof(Matrix_t<1, 3, float>), typeidof(Matrix_t<1, 4, float>) },
+					{ typeidof(Matrix_t<2, 1, float>), typeidof(Matrix_t<2, 2, float>), typeidof(Matrix_t<2, 3, float>), typeidof(Matrix_t<2, 4, float>) },
+					{ typeidof(Matrix_t<3, 1, float>), typeidof(Matrix_t<3, 2, float>), typeidof(Matrix_t<3, 3, float>), typeidof(Matrix_t<3, 4, float>) },
+					{ typeidof(Matrix_t<4, 1, float>), typeidof(Matrix_t<4, 2, float>), typeidof(Matrix_t<4, 3, float>), typeidof(Matrix_t<4, 4, float>) },
+				};
+				const auto& [column_count, row_count, stride] = a_typeDescription.traits.numeric.matrix;
+				*a_outTypeId = matrixTypeIds[column_count - 1][row_count - 1];
+				*a_outStride *= stride; // stride is number of elements
+				return true;
+			}
+			if (a_typeDescription.type_flags & SPV_REFLECT_TYPE_FLAG_VECTOR)
+			{
+				constexpr TypeId vectorTypeIds[4] = {
+					typeidof(Vector_t<1, float>),
+					typeidof(Vector_t<2, float>),
+					typeidof(Vector_t<3, float>),
+					typeidof(Vector_t<4, float>)
+				};
+				const auto& [component_count] = a_typeDescription.traits.numeric.vector;
+				*a_outTypeId = vectorTypeIds[component_count - 1];
+				*a_outStride *= component_count;
+				return true;
+			}
+
+			*a_outTypeId = typeidof(float32);
+			return true;
 		}
-		return TypeId::Null;
+
+		throw "Spirv Type not implemented yet!";
+		//return false;
 	}
 #else
 	struct ShaderCompiler::Impl

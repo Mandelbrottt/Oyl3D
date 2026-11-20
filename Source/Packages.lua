@@ -488,6 +488,27 @@ local Packages = {
 			end
 		end,
 	},
+	SpirvReflect = {
+		Git = {
+			Url = "https://github.com/KhronosGroup/SPIRV-Reflect.git",
+			Ref = "vulkan-sdk-1.4.341.0"
+		},
+		OnProject = function(prj)
+			language "C++"
+			kind "StaticLib"
+
+			files {
+				"spirv_reflect.cpp",
+				"spirv_reflect.h",
+			}
+
+			usage "INTERFACE"; do
+				links {
+					prj.name
+				}
+			end
+		end,
+	},
 	Tracy = {
 		Git = {
 			Url = "https://github.com/wolfpld/tracy.git",
